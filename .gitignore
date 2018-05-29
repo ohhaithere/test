@@ -1,0 +1,12 @@
+.idea
+*.iml
+target/
+ObjectStore/
+
+log/
+
+*.jar
+/.project
+
+dependency-reduced-pom.xml
+

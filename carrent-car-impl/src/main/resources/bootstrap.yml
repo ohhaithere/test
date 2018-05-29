@@ -1,0 +1,4 @@
+spring:
+  application:
+    name: car
+cloud.kubernetes.config.name: car
