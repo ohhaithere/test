@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class MemoryCarRepositoryStub {
 
-    private final Map<Long, Car> cars = new ConcurrentHashMap<Long, Car>();
+    private final Map<Long, Car> cars = new ConcurrentHashMap<>();
 
     public Car save(Car car) {
         cars.put(car.getId(), car);
@@ -35,13 +35,11 @@ public class MemoryCarRepositoryStub {
         return save(car);
     }
 
-    public Car delete(Car car) {
-        if (cars.containsKey(car.getId())) {
-            Car c = cars.get(car.getId());
-            cars.remove(car.getId());
-            return c;
-        }
-        return null;
+    public void delete(Long id) {
+        cars.remove(id);
     }
 
+    public boolean exists(Long carId) {
+        return cars.containsKey(carId);
+    }
 }
