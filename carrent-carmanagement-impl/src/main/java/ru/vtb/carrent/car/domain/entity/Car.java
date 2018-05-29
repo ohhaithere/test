@@ -50,7 +50,7 @@ public class Car {
     /**
      * Пробег на последнюю дату в статусе в наличии
      */
-    private double mileage;
+    private int mileage;
 
     /**
      * Дата последнего ТО

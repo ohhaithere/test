@@ -36,8 +36,8 @@ public class CarDto {
     @ApiModelProperty(value = "Год выпуска", example = "28/05/2018")
     private Date dateOfManufacture;
 
-    @ApiModelProperty(value = "Пробег на последнюю дату в статусе в наличии", example = "11.1")
-    private double mileage;
+    @ApiModelProperty(value = "Пробег на последнюю дату в статусе в наличии", example = "11")
+    private int mileage;
 
     @ApiModelProperty(value = "Дата последнего ТО", example = "29/05/2018")
     private Date dateOfLastCheck;
