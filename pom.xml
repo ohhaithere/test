@@ -11,12 +11,12 @@
 
     <name>Carrent Car</name>
     <modules>
-        <module>carrent-car-api</module>
-        <module>carrent-car-impl</module>
+        <module>carrent-carmanagement-api</module>
+        <module>carrent-carmanagement-impl</module>
     </modules>
 
     <groupId>ru.carrent</groupId>
-    <artifactId>carrent-car</artifactId>
+    <artifactId>carrent-carmanagement</artifactId>
     <version>0.0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
