@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
-import ru.vtb.carrent.car.repository.CarRepository;
+import ru.vtb.carrent.car.repository.impl.MemoryCarRepositoryStub;
 import ru.vtb.carrent.car.service.CarService;
 
 
@@ -24,7 +24,7 @@ import ru.vtb.carrent.car.service.CarService;
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
 
-    private final CarRepository repository;
+    private final MemoryCarRepositoryStub repository;
 
     /**
      * {@inheritDoc}

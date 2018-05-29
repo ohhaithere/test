@@ -58,6 +58,7 @@
             **/dto/**,
             **/exception/**,
             **/config/**,
+            **/repository/impl/**,
         </sonar.exclusions>
 
         <!-- Build number to be forwarded from Jenkins while building-->

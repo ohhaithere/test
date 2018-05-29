@@ -38,6 +38,11 @@ public class Car {
     private String model;
 
     /**
+     * Государственный номер автомобиля
+     */
+    private String regNumber;
+
+    /**
      * Год выпуска
      */
     private Date dateOfManufacture;

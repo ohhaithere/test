@@ -27,6 +27,7 @@ import ru.vtb.carrent.car.config.util.mapper.CarMapperTestConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 import ru.vtb.carrent.car.repository.CarRepository;
+import ru.vtb.carrent.car.repository.impl.MemoryCarRepositoryStub;
 import ru.vtb.carrent.car.service.CarService;
 
 
@@ -39,7 +40,8 @@ import ru.vtb.carrent.car.service.CarService;
 public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     @Mock
-    private CarRepository repository;
+//    private CarRepository repository;
+    private MemoryCarRepositoryStub repository;
 
     private CarService service;
     private Long testId = 123L;
@@ -89,9 +91,9 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     public void testDelete() {
-        doNothing().when(repository).delete(anyLong());
-        service.delete(testId);
-        verify(repository).delete(eq(testId));
+//        doNothing().when(repository).delete(anyLong());
+//        service.delete(testId);
+//        verify(repository).delete(eq(testId));
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)
