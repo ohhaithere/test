@@ -5,8 +5,14 @@
 
 package ru.vtb.carrent.car.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.vtb.carrent.car.domain.entity.Car;
+import ru.vtb.carrent.car.domain.model.KeyValuePair;
+import ru.vtb.carrent.car.domain.model.SortingInfo;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
+
+import java.util.List;
 
 /**
  * Car service.
@@ -32,6 +38,35 @@ public interface CarService {
      *  @throws EntityNotFoundException when car is not found
      */
     Car find(Long id);
+
+    /**
+     * Finds Cars by filter.
+     *
+     * @param filter filter
+     * @return found cars
+     *
+     *  @throws EntityNotFoundException when car is not found
+     */
+//    List<Car> getByFilter(List<KeyValuePair> filter);
+
+    /**
+     * Finds Cars by filter
+     *
+     * @param filter filter
+     * @param sortingInfo sortingInfo
+     * @param page number of page
+     * @param size page size
+     * @return found car
+     *
+     *  @throws EntityNotFoundException when car is not found
+     */
+//    List<Car> getByFilter(List<KeyValuePair> filter, SortingInfo sortingInfo, Integer page, Integer size);
+
+    /**
+     * Find paginated cars
+     * @param pageRequest page request
+     */
+    Page<Car> findPaginated(Pageable pageRequest);
 
     /**
      * Updates Car.
