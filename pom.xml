@@ -57,6 +57,7 @@
             **/entity/**,
             **/dto/**,
             **/exception/**,
+            **/status/**,
             **/config/**,
             **/repository/impl/**,
         </sonar.exclusions>
