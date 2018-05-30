@@ -28,4 +28,8 @@
                        tableName="car"/>
     </changeSet>
 
+    <changeSet id="2018-05-30_create-hibernate-sequence" author="Nikita_Puzankov">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+
 </databaseChangeLog>

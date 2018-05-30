@@ -11,7 +11,9 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
-
+  kafka:
+    enabled: true
+    bootstrap-servers: kafka-service:9092
   datasource:
       driverClassName: org.postgresql.Driver
       url: jdbc:postgresql://postgresql:5432/db?currentSchema=carmanagement
@@ -49,7 +51,7 @@ hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
 logging:
   level:
     ROOT: INFO
-    ru.vtb.dbo: DEBUG
+    ru.vtb.carrent: DEBUG
     org.springframework: INFO
 
 ---
@@ -59,7 +61,10 @@ spring:
     kubernetes:
       discovery:
         enabled: false
-
+  kafka:
+    bootstrap-servers: localhost:9092
+  datasource:
+      url: jdbc:postgresql://localhost:5432/db?currentSchema=carmanagement
 
 server:
   port: 8080
