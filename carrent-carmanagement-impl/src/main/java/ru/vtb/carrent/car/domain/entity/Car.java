@@ -93,4 +93,10 @@ public class Car {
     @Column(name = "date_of_next_status")
     private Date dateOfNextStatus;
 
+    /**
+     * Локация
+     */
+    @Column(name = "location")
+    private String location;
+
 }

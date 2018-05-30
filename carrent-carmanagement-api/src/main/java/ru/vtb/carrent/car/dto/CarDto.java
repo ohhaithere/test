@@ -56,4 +56,7 @@ public class CarDto {
 
     @ApiModelProperty(value = "Плановая дата следуюшего статуса", example = "31/05/2018")
     private Date dateOfNextStatus;
+
+    @ApiModelProperty(value = "Локация автомобиля", example = "Москва")
+    private String location;
 }
