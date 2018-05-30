@@ -56,6 +56,8 @@
         <sonar.exclusions>
             **/domain/**,
             **/entity/**,
+            **/car/message/**,
+            **/car/resource/**,
             **/dto/**,
             **/exception/**,
             **/status/**,
