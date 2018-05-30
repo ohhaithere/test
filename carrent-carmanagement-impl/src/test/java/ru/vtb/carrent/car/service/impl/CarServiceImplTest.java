@@ -9,6 +9,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
@@ -22,7 +23,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import ru.vtb.carrent.car.config.BaseTestConfig;
 import ru.vtb.carrent.car.config.util.mapper.CarMapperTestConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
@@ -44,8 +44,8 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     private MemoryCarRepositoryStub repository;
 
     private CarService service;
-    private Long testId = 123L;
-    private Car request;
+    private Long testCarId = 123L;
+    private Car testCar;
 
     @BeforeTest
     public void init() {
@@ -56,50 +56,57 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     @BeforeMethod
     public void reset() {
         Mockito.reset(repository);
-        request = new Car().setId(testId);
+        testCar = new Car().setId(testCarId);
     }
 
     @Test
-    public void testCreate() throws Exception {
-        when(repository.save(any(Car.class))).thenReturn(request);
+    public void testCreate() {
+        when(repository.save(any(Car.class))).thenReturn(testCar);
 
-        service.create(request);
+        service.create(testCar);
 
-        verify(repository).save(eq(request));
+        verify(repository).save(eq(testCar));
     }
 
     @Test
     public void testFind() {
-        when(repository.findOne(anyLong())).thenReturn(request);
+        when(repository.findOne(anyLong())).thenReturn(testCar);
 
-        Car found = service.find(testId);
+        Car found = service.find(testCarId);
 
-        assertEquals(testId, found.getId());
-        verify(repository).findOne(eq(testId));
-    }
-
-    @Test
-    public void testUpdate() {
-        when(repository.save(any(Car.class))).thenReturn(request);
-        when(repository.findOne(anyLong())).thenReturn(request);
-
-        service.update(request);
-
-        verify(repository).save(eq(request));
-        verify(repository).findOne(anyLong());
-    }
-
-    @Test(enabled = false)
-    public void testDelete() {
-//        doNothing().when(repository).delete(anyLong());
-//        service.delete(testId);
-//        verify(repository).delete(eq(testId));
+        assertEquals(testCarId, found.getId());
+        verify(repository).findOne(eq(testCarId));
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)
     public void testFindWrongId() {
         when(repository.findOne(anyLong())).thenReturn(null);
-        service.find(testId);
+        service.find(testCarId);
+    }
+
+    @Test
+    public void testUpdate() {
+        when(repository.exists(testCar.getId())).thenReturn(true);
+        when(repository.save(any(Car.class))).thenReturn(testCar);
+
+        service.update(testCar);
+
+        verify(repository).save(eq(testCar));
+        verify(repository).exists(anyLong());
+    }
+
+    @Test(expectedExceptions = EntityNotFoundException.class)
+    public void testUpdateNonexistentCar() {
+        when(repository.exists(testCar.getId())).thenReturn(false);
+
+        service.update(testCar);
+    }
+
+    @Test(enabled = false)
+    public void testDelete() {
+        doNothing().when(repository).delete(anyLong());
+        service.delete(testCarId);
+        verify(repository).delete(eq(testCarId));
     }
 
 }

@@ -50,9 +50,12 @@ public class CarServiceImpl implements CarService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public Car update(Car car) {
-        find(car.getId());
-        //Here could comes field copying
+        Long carId = car.getId();
+        if (!repository.exists(carId)) {
+            throw new EntityNotFoundException(String.format("Car with id %s not found", carId));
+        }
         return repository.save(car);
     }
 
@@ -61,7 +64,7 @@ public class CarServiceImpl implements CarService {
      */
     @Override
     public void delete(Long id) {
-        repository.delete(find(id));
+        repository.delete(id);
     }
 
 }
