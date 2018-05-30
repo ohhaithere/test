@@ -9,6 +9,8 @@ import com.google.common.reflect.TypeToken;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * Base document mapper.
  *
@@ -37,6 +39,16 @@ public abstract class DocumentMapper<D, E> {
     }
 
     /**
+     * Maps document from Domain to DTO.
+     *
+     * @param domain Domain
+     * @return DTO
+     */
+    public List<E> toDto(List<D> domain) {
+        return mapperFacade.mapAsList(domain, getDtoClass());
+    }
+
+    /**
      * Maps Document from DTO to Domain.
      *
      * @param dto DTO
@@ -44,6 +56,16 @@ public abstract class DocumentMapper<D, E> {
      */
     public D fromDto(E dto) {
         return mapperFacade.map(dto, getDomainClass());
+    }
+
+    /**
+     * Maps Document from DTO to Domain.
+     *
+     * @param dto DTO
+     * @return Domain
+     */
+    public List<D> fromDto(List<E> dto) {
+        return mapperFacade.mapAsList(dto, getDomainClass());
     }
 
     private Class<D> getDomainClass() {

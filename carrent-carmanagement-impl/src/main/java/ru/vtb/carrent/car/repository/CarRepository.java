@@ -13,6 +13,6 @@ import ru.vtb.carrent.car.domain.entity.Car;
  *
  * @author Valiantsin_Charkashy
  */
-public interface CarRepository extends JpaRepository<Car, Long> {
+public interface CarRepository extends JpaRepository<Car, Long>, CarRepositoryCustom {
 
 }
