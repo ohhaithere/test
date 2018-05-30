@@ -5,8 +5,7 @@
 
 package ru.vtb.carrent.car.domain.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -24,6 +23,9 @@ import java.util.Date;
 @Setter
 @Accessors(chain = true)
 @Entity
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Car {
 
     /**

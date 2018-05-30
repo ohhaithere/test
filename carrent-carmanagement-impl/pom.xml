@@ -27,6 +27,7 @@
         <liquibase.schema>carmanagement</liquibase.schema>
         <liquibase.user>carmanagement</liquibase.user>
         <liquibase.password>carmanagement</liquibase.password>
+        <carrent.preorder.version>0.0.0-SNAPSHOT</carrent.preorder.version>
     </properties>
 
     <build>
@@ -155,6 +156,11 @@
             <artifactId>carrent-carmanagement-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ru.carrent</groupId>
+            <artifactId>carrent-preorder-api</artifactId>
+            <version>${carrent.preorder.version}</version>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
@@ -166,6 +172,11 @@
                     <artifactId>jul-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
 
         <dependency>

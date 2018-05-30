@@ -8,6 +8,8 @@ package ru.vtb.carrent.car.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.vtb.carrent.car.domain.entity.Car;
 
+import java.util.List;
+
 /**
  * Repository for car.
  *
@@ -15,4 +17,5 @@ import ru.vtb.carrent.car.domain.entity.Car;
  */
 public interface CarRepository extends JpaRepository<Car, Long> {
 
+    List<Car> findByCurrentStatusIgnoreCase(String currentStatus);
 }

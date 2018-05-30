@@ -34,7 +34,7 @@ public enum Status {
         }
 
         for (Status status : values()) {
-            if (value.equals(status.getDisplayName())) {
+            if (value.equalsIgnoreCase(status.getDisplayName())) {
                 return status;
             }
         }
