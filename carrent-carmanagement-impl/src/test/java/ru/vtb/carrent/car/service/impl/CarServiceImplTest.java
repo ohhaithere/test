@@ -5,15 +5,6 @@
 
 package ru.vtb.carrent.car.service.impl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -27,21 +18,26 @@ import ru.vtb.carrent.car.config.util.mapper.CarMapperTestConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 import ru.vtb.carrent.car.repository.CarRepository;
-import ru.vtb.carrent.car.repository.impl.MemoryCarRepositoryStub;
 import ru.vtb.carrent.car.service.CarService;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 
 /**
  * Unit tests for {@link CarServiceImpl}.
- *
  */
 @ActiveProfiles("test")
 @ContextConfiguration(classes = CarMapperTestConfig.class)
 public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     @Mock
-//    private CarRepository repository;
-    private MemoryCarRepositoryStub repository;
+    private CarRepository repository;
 
     private CarService service;
     private Long testCarId = 123L;

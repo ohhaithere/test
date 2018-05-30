@@ -12,17 +12,18 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
-#  datasource:
-#      driverClassName: org.postgresql.Driver
-#      url: jdbc:postgresql://localhost:5432/db?currentSchema=car
-#      username: dbo_user
-#      password: dbo_user
-#  jpa:
-#    show-sql: true
-#    hibernate:
-#      ddl-auto: create
-#      naming:
-#        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+  datasource:
+      driverClassName: org.postgresql.Driver
+      url: jdbc:postgresql://postgresql:5432/db?currentSchema=carmanagement
+      username: carmanagement
+      password: carmanagement
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
 
 #security:
 #  oauth2:

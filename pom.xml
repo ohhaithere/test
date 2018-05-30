@@ -39,6 +39,7 @@
         <podam.version>7.1.0.RELEASE</podam.version>
         <ibm.mq.version>7.5.0.2</ibm.mq.version>
 
+        <liquibase.version>3.5.3</liquibase.version>
         <postgresql.version>42.1.4</postgresql.version>
 
         <!--

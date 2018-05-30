@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="20180530_create-car-table" author="Tsimafei_Dynikau">
+        <preConditions>
+            <not>
+                <tableExists tableName="car"/>
+            </not>
+        </preConditions>
+        <createTable tableName="car">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="VARCHAR(100)"/>
+            <column name="reg_number" type="VARCHAR(100)"/>
+            <column name="date_of_manufacture" type="TIMESTAMP"/>
+            <column name="mileage" type="INTEGER"/>
+            <column name="date_of_last_check" type="TIMESTAMP"/>
+            <column name="date_of_next_check" type="TIMESTAMP"/>
+            <column name="current_status" type="VARCHAR(100)"/>
+            <column name="date_of_current_status" type="TIMESTAMP"/>
+            <column name="next_status" type="VARCHAR(100)"/>
+            <column name="date_of_next_status" type="TIMESTAMP"/>
+        </createTable>
+        <addPrimaryKey columnNames="id" constraintName="car_id_pk"
+                       tableName="car"/>
+    </changeSet>
+
+</databaseChangeLog>
