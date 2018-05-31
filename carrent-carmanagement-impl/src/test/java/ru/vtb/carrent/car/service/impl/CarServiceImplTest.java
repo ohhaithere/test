@@ -5,9 +5,7 @@
 
 package ru.vtb.carrent.car.service.impl;
 
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -23,9 +21,7 @@ import ru.vtb.carrent.car.service.CarService;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 
@@ -36,7 +32,6 @@ import static org.testng.Assert.assertEquals;
 @ContextConfiguration(classes = CarMapperTestConfig.class)
 public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
-    @Mock
     private CarRepository repository;
 
     private CarService service;
@@ -45,13 +40,12 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     @BeforeTest
     public void init() {
-        MockitoAnnotations.initMocks(this);
+        repository = Mockito.mock(CarRepository.class);
         service = new CarServiceImpl(repository);
     }
 
     @BeforeMethod
     public void reset() {
-        Mockito.reset(repository);
         testCar = new Car().setId(testCarId);
     }
 

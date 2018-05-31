@@ -51,5 +51,6 @@ public class CarStatusChangedToMaintenanceConsumer {
         car.setDateOfCurrentStatus(new Date());
         car.setDateOfLastCheck(new Date());
         car.setDateOfNextCheck(Date.from(car.getDateOfLastCheck().toInstant().plus(defaultMaintenanceDelay)));
+        carService.update(car);
     }
 }
