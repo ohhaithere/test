@@ -5,7 +5,11 @@
 
 package ru.vtb.carrent.car.domain.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -96,9 +100,8 @@ public class Car {
     private Date dateOfNextStatus;
 
     /**
-     * Локация
+     * ID Локации
      */
-    @Column(name = "location")
-    private Long location;
-
+    @Column(name = "location_id")
+    private Long locationId;
 }
