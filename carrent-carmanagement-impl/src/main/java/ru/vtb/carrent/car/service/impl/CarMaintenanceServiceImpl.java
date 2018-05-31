@@ -5,6 +5,7 @@
 
 package ru.vtb.carrent.car.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.message.CarStatusChangedMessage;
 import ru.vtb.carrent.car.repository.CarRepository;
+import ru.vtb.carrent.car.service.PreferencesService;
 import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.preorder.dto.MessageContainer;
 
@@ -27,15 +29,15 @@ import java.util.List;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CarMaintenanceServiceImpl {
+
+    private static final String SERVICE_INTERVAL_PROPERTY = "service-interval";
+    private static final int SERVICE_INTERVAL_DEFAULT = 30;
 
     private final CarRepository carRepository;
     private final Sender sender;
-
-    public CarMaintenanceServiceImpl(CarRepository carRepository, Sender sender) {
-        this.carRepository = carRepository;
-        this.sender = sender;
-    }
+    private final PreferencesService preferencesService;
 
     /**
      * Scheduled job which would scan cars and put them on maintenance if needed.
@@ -69,6 +71,16 @@ public class CarMaintenanceServiceImpl {
                     )
             );
             sender.send(KafkaConfig.MGMNT_CAR_STATUSES, messageContainer);
+        }
+    }
+
+    private int getServiceIntervalValue() {
+        String value = preferencesService.find(SERVICE_INTERVAL_PROPERTY);
+        try {
+            return Integer.valueOf(value);
+        } catch (NumberFormatException e) {
+            log.error(String.format("Property '%s' has invalid value: %s", SERVICE_INTERVAL_PROPERTY, value), e);
+            return SERVICE_INTERVAL_DEFAULT;
         }
     }
 }

@@ -5,7 +5,10 @@
 
 package ru.vtb.carrent.car.service.impl;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeMethod;
@@ -20,7 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 
 /**
- * Unit test for {@link CarMaintenanceServiceImpl}
+ * Unit test for {@link CarMaintenanceServiceImpl}.
  *
  * @author Nikita_Puzankov
  */
@@ -28,18 +31,18 @@ import java.util.Date;
 @ContextConfiguration(classes = CarMapperTestConfig.class)
 public class CarMaintenanceServiceImplTest {
 
+    @InjectMocks
     private CarMaintenanceServiceImpl carMaintenanceService;
+
+    @Mock
     private CarRepository carRepository;
+
+    @Mock
     private Sender sender;
 
     @BeforeMethod
     public void setUp() {
-        carRepository = Mockito.mock(CarRepository.class);
-        sender = Mockito.mock(Sender.class);
-        carMaintenanceService = new CarMaintenanceServiceImpl(
-                carRepository,
-                sender
-        );
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
