@@ -59,7 +59,7 @@ public interface CarResource {
             @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
                     value = "Number of records per page.")
     })
-    @GetMapping(value = "/list")
+    @GetMapping
     Page<CarDto> getCars(Pageable pageRequest);
 
     /**
