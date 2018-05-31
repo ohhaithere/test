@@ -60,8 +60,7 @@ public class CarMaintenanceServiceImplTest {
                                 new Date(),
                                 Status.IN_STOCK.getDisplayName(),
                                 new Date(),
-                                1L
-                        )
+                                1L)
                 )
         );
         carMaintenanceService.checkAndPutOnMaintenance();

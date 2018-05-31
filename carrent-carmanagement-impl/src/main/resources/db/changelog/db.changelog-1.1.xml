@@ -15,4 +15,12 @@
                         tableName="car"/>
     </changeSet>
 
+    <changeSet id="20180531_car-table-add-location-id-column" author="Tsimafei_Dynikau">
+        <preConditions>
+            <tableExists tableName="car"/>
+            <columnExists tableName="car" columnName="location"/>
+        </preConditions>
+        <renameColumn tableName="car" oldColumnName="location" newColumnName="location_id"/>
+    </changeSet>
+
 </databaseChangeLog>
