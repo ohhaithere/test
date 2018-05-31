@@ -88,7 +88,7 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testGetPaginatedCars() throws Exception {
-        MockHttpServletRequestBuilder getRequest = get("/ui/car/list")
+        MockHttpServletRequestBuilder getRequest = get("/ui/car")
                 .param("page", "1")
                 .param("size", "1")
                 .accept(MediaType.APPLICATION_JSON);
