@@ -15,18 +15,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.vtb.carrent.car.config.resource.CarResourceImplTestConfig;
@@ -35,12 +42,15 @@ import ru.vtb.carrent.car.dto.CarDto;
 import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.util.MockUtil;
 
+import java.util.Arrays;
+
 /**
  * Car resource impl
  */
 @ActiveProfiles("test")
 @WebMvcTest(value = CarResourceImpl.class, secure = false)
 @ContextConfiguration(classes = CarResourceImplTestConfig.class)
+@EnableSpringDataWebSupport
 public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
@@ -74,6 +84,19 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
         mockMvc.perform(get("/ui/car/123"))
                 .andExpect(status().isOk());
         verify(carService).find(anyLong());
+    }
+
+    @Test
+    public void testGetPaginatedCars() throws Exception {
+        MockHttpServletRequestBuilder getRequest = get("/ui/car/list")
+                .param("page", "1")
+                .param("size", "1")
+                .accept(MediaType.APPLICATION_JSON);
+        when(carService.findPaginated(any(Pageable.class))).thenReturn(new PageImpl<>(Arrays.asList(new Car())));
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", Matchers.hasSize(1)));
+        verify(carService).findPaginated(any(Pageable.class));
     }
 
     @Test
