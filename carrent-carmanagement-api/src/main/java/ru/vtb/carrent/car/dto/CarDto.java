@@ -58,5 +58,5 @@ public class CarDto {
     private Date dateOfNextStatus;
 
     @ApiModelProperty(value = "Локация автомобиля", example = "Москва")
-    private String location;
+    private Long location;
 }

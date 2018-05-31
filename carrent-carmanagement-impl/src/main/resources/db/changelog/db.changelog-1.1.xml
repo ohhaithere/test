@@ -9,4 +9,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="20180531_change-location-column-type" author="Roman Meerson">
+        <modifyDataType columnName="location"
+                        newDataType="bigint"
+                        tableName="car"/>
+    </changeSet>
+
 </databaseChangeLog>

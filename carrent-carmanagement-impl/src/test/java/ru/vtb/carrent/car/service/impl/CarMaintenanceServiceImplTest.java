@@ -60,7 +60,7 @@ public class CarMaintenanceServiceImplTest {
                                 new Date(),
                                 Status.IN_STOCK.getDisplayName(),
                                 new Date(),
-                                "location"
+                                1L
                         )
                 )
         );

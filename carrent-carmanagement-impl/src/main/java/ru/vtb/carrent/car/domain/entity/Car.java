@@ -99,6 +99,6 @@ public class Car {
      * Локация
      */
     @Column(name = "location")
-    private String location;
+    private Long location;
 
 }
