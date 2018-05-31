@@ -7,7 +7,6 @@ package ru.vtb.carrent.car.status;
  */
 public enum Status {
 
-    PREORDER("Предзаказ"),
     IN_STOCK("В Наличии"),
     IN_RENT("В Прокате"),
     ON_MAINTENANCE("На Обслуживании"),
@@ -28,7 +27,7 @@ public enum Status {
         return displayName;
     }
 
-    public static Status getStatusByDisplayName(String value) {
+    public static Status get(String value) {
         if (value == null) {
             return  null;
         }

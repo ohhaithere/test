@@ -42,6 +42,7 @@
 
         <liquibase.version>3.5.3</liquibase.version>
         <postgresql.version>42.1.4</postgresql.version>
+        <spring-statemachine.version>2.0.1.RELEASE</spring-statemachine.version>
 
         <!--
           Components configuration (override for packaging to Docker)
@@ -62,9 +63,11 @@
             **/dto/**,
             **/exception/**,
             **/status/**,
+            **/event/**,
             **/service/**,
             **/config/**,
             **/repository/**,
+            **/statemachine/**
         </sonar.exclusions>
 
         <!-- Build number to be forwarded from Jenkins while building-->
@@ -100,6 +103,11 @@
                 <version>Dalston.SR3</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.statemachine</groupId>
+                <artifactId>spring-statemachine-core</artifactId>
+                <version>${spring-statemachine.version}</version>
             </dependency>
 
             <dependency>

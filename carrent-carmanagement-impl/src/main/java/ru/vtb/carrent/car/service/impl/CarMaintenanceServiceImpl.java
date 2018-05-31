@@ -64,7 +64,7 @@ public class CarMaintenanceServiceImpl {
             MessageContainer<CarStatusChangedMessage> messageContainer = new MessageContainer<>(
                     new CarStatusChangedMessage(
                             car.getId(),
-                            Status.getStatusByDisplayName(car.getCurrentStatus()),
+                            Status.get(car.getCurrentStatus()),
                             Status.ON_MAINTENANCE
                     )
             );
