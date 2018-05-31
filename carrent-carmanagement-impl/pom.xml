@@ -161,6 +161,11 @@
             <artifactId>carrent-preorder-api</artifactId>
             <version>${carrent.preorder.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ru.carrent</groupId>
+            <artifactId>carrent-organization-api</artifactId>
+            <version>${carrent.organization.version}</version>
+        </dependency>
 
         <!-- Spring -->
         <dependency>

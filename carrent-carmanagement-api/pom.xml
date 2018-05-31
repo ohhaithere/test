@@ -63,6 +63,11 @@
             </exclusions>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>ru.carrent</groupId>
+            <artifactId>carrent-organization-api</artifactId>
+            <version>${carrent.organization.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
