@@ -13,6 +13,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.vtb.carrent.car.dto.CarDto;
+import ru.vtb.carrent.car.filter.FilteredPageRequest;
+
+import java.util.List;
 
 import java.util.Date;
 
@@ -44,19 +47,18 @@ public interface CarResource {
     CarDto getCar(@PathVariable("id") Long id);
 
     /**
-     * Get cars.
+     * Get paginated cars by filter.
      *
-     * @param pageRequest page request
+     * @param request page request
      * @return found cars
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-                    value = "Results page you want to retrieve (0..N)"),
-            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-                    value = "Number of records per page.")
+            @ApiImplicitParam(name = "request", dataType = "FilteredPageRequest", paramType = "query",
+                    value = "Request contains filter string in Base64 format that represents the filter and" +
+                            ""),
     })
     @GetMapping
-    Page<CarDto> getCars(Pageable pageRequest);
+    Page<CarDto> getCars(FilteredPageRequest request);
 
     /**
      * Updates Car.

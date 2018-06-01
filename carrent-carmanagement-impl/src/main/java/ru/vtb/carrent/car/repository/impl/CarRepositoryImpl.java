@@ -1,3 +1,8 @@
+/*
+ * VTB Group. Do not reproduce without permission in writing.
+ * Copyright (c) 2018 VTB Group. All rights reserved.
+ */
+
 package ru.vtb.carrent.car.repository.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -5,11 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.domain.model.KeyValuePair;
 import ru.vtb.carrent.car.repository.CarRepositoryCustom;
-import ru.vtb.carrent.car.repository.RepositoryHelper;
-import ru.vtb.carrent.car.domain.model.SortingInfo;
+import ru.vtb.carrent.car.util.RepositoryHelper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -37,7 +42,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    public List<Car> findByFilter(List<KeyValuePair> filter) {
+    public Page<Car> findByFilter(List<KeyValuePair> filter, Pageable pageable) {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Car> criteria = criteriaBuilder.createQuery(Car.class);
         Root<Car> root = criteria.from(Car.class);
@@ -45,47 +50,9 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
         countQuery.select(criteriaBuilder.count(countQuery.from(Car.class)));
 
-        List<Predicate> predicates = new LinkedList<>();
-        if (CollectionUtils.isNotEmpty(filter)) {
-            Path<String> path;
-            Class<String> javaType;
-            String key, value;
-            List valuesList;
-            for (KeyValuePair pair : filter) {
-                key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
-                path = root.get(key);
-                if (path == null) {
-                    throw new RuntimeException(String.format("Field with name '%s' not found", key));
-                }
-
-                javaType = path.getModel().getBindableJavaType();
-                value = (String) pair.getValue();
-                if (StringUtils.isNotBlank(value)) {
-                    predicates.add(RepositoryHelper.getEqualCriteria(value.trim(), javaType, criteriaBuilder, path, true));
-                }
-
-            }
+        if (pageable.getSort() != null) {
+            criteria = criteria.orderBy(QueryUtils.toOrders(pageable.getSort(), root, criteriaBuilder));
         }
-
-        criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        countQuery.where(predicates.toArray(new Predicate[predicates.size()]));
-
-        return em.createQuery(criteria).getResultList();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Page<Car> findByFilter(List<KeyValuePair> filter, SortingInfo sortingInfo, Pageable pageable) {
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Car> criteria = criteriaBuilder.createQuery(Car.class);
-        Root<Car> root = criteria.from(Car.class);
-
-        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
-        countQuery.select(criteriaBuilder.count(countQuery.from(Car.class)));
-
-        RepositoryHelper.setSortingCriteria(sortingInfo, criteria, root, criteriaBuilder);
 
         List<Predicate> predicates = new LinkedList<>();
         if (CollectionUtils.isNotEmpty(filter)) {
@@ -122,31 +89,5 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         Long total = em.createQuery(countQuery).getSingleResult();
         List<Car> content = total > pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl<>(content, pageable, total);
-    }
-
-    /**
-     * Converts values and creates a "OR" request.
-     *
-     * @param values          list of values
-     * @param javaType        type of value
-     * @param criteriaBuilder {@link CriteriaBuilder}
-     * @param path            {@link Path}
-     * @param strict          strict flag
-     * @return {@link Predicate}
-     */
-    private Predicate createOrCriteria(List values, Class<String> javaType, CriteriaBuilder criteriaBuilder,
-                                       Path<String> path, boolean strict) {
-        List<Predicate> predicates = new LinkedList<>();
-        if (javaType.isAssignableFrom(String.class)) {
-            String pattern;
-            for (Object value : values) {
-                String val = (String) value;
-                if (StringUtils.isNotBlank(val)) {
-                    pattern = strict ? val.trim().toUpperCase() : "%" + val.trim().toUpperCase() + "%";
-                    predicates.add(criteriaBuilder.like(criteriaBuilder.upper(path), pattern));
-                }
-            }
-        }
-        return criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]));
     }
 }
