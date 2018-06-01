@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -17,6 +18,8 @@ import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 import ru.vtb.carrent.car.repository.CarRepository;
 import ru.vtb.carrent.car.service.CarService;
+
+import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -47,6 +50,11 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     @BeforeMethod
     public void reset() {
         testCar = new Car().setId(testCarId);
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        Mockito.reset(repository);
     }
 
     @Test
@@ -90,6 +98,39 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
         when(repository.exists(testCar.getId())).thenReturn(false);
 
         service.update(testCar);
+    }
+
+    @Test
+    public void testInRentCar() {
+        when(repository.exists(testCar.getId())).thenReturn(true);
+        when(repository.findOne(testCar.getId())).thenReturn(testCar);
+
+        final Date endDate = new Date();
+        service.inRent(testCar.getId(), endDate);
+    }
+
+    @Test
+    public void testInStockCar() {
+        when(repository.exists(testCar.getId())).thenReturn(true);
+        when(repository.findOne(testCar.getId())).thenReturn(testCar);
+
+        service.inStock(testCar.getId());
+    }
+
+    @Test
+    public void testOnMaintenanceCar() {
+        when(repository.exists(testCar.getId())).thenReturn(true);
+        when(repository.findOne(testCar.getId())).thenReturn(testCar);
+
+        service.onMaintenance(testCar.getId());
+    }
+
+    @Test
+    public void testDropOutCar() {
+        when(repository.exists(testCar.getId())).thenReturn(true);
+        when(repository.findOne(testCar.getId())).thenReturn(testCar);
+
+        service.dropOut(testCar.getId());
     }
 
     @Test(enabled = false)

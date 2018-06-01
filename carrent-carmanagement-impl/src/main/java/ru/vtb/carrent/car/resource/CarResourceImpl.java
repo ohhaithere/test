@@ -9,19 +9,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.dto.CarDto;
-import ru.vtb.carrent.car.exception.EntityNotFoundException;
 import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.util.mapper.CarMapper;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * Car resource implementation.
@@ -84,6 +82,58 @@ public class CarResourceImpl implements CarResource {
                             @ApiParam(value = "Car body", required = true)
                             @RequestBody CarDto carDto) {
         return mapper.toDto(service.update(mapper.fromDto(carDto.setId(id))));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @ApiOperation(
+            value = "Put a car with specific ID in rent."
+    )
+    public CarDto inRentCar(@ApiParam(value = "Car id", required = true)
+                            @PathVariable("id") Long id,
+                            @ApiParam(value = "End Date of rent", required = true)
+                            @RequestParam("endDate")
+                            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                    Date endDate) {
+        return mapper.toDto(service.inRent(id, endDate));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @ApiOperation(
+            value = "Put a car with specific ID in stock."
+    )
+    public CarDto inStockCar(@ApiParam(value = "Car id", required = true)
+                             @PathVariable("id") Long id) {
+        return mapper.toDto(service.inStock(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @ApiOperation(
+            value = "Put a car with specific ID on maintenance."
+    )
+    public CarDto onMaintenance(@ApiParam(value = "Car id", required = true)
+                                @PathVariable("id") Long id) {
+        return mapper.toDto(service.onMaintenance(id));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @ApiOperation(
+            value = "Drop a car with specific ID."
+    )
+    public CarDto dropOut(@ApiParam(value = "Car id", required = true)
+                          @PathVariable("id") Long id) {
+        return mapper.toDto(service.dropOut(id));
     }
 
     /**

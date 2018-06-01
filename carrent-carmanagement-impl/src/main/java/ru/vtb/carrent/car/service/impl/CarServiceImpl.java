@@ -6,21 +6,17 @@
 package ru.vtb.carrent.car.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vtb.carrent.car.domain.entity.Car;
-import ru.vtb.carrent.car.domain.model.KeyValuePair;
-import ru.vtb.carrent.car.domain.model.SortingInfo;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 import ru.vtb.carrent.car.repository.CarRepository;
 import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.status.Status;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Date;
 
 
 /**
@@ -70,6 +66,68 @@ public class CarServiceImpl implements CarService {
         if (!repository.exists(carId)) {
             throw new EntityNotFoundException(String.format("Car with id %s not found", carId));
         }
+        return repository.save(car);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public Car inRent(Long id, Date endDate) {
+        if (!repository.exists(id)) {
+            throw new EntityNotFoundException(String.format("Car with id %s not found", id));
+        }
+        final Car car = repository.findOne(id);
+        car.setCurrentStatus(Status.IN_RENT.getDisplayName());
+        car.setDateOfCurrentStatus(new Date());
+        car.setNextStatus(Status.IN_STOCK.getDisplayName());
+        car.setDateOfNextStatus(endDate);
+        return repository.save(car);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public Car inStock(Long id) {
+        if (!repository.exists(id)) {
+            throw new EntityNotFoundException(String.format("Car with id %s not found", id));
+        }
+        final Car car = repository.findOne(id);
+        car.setNextStatus(Status.IN_STOCK.getDisplayName());
+        car.setDateOfNextStatus(new Date());
+        return repository.save(car);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public Car onMaintenance(Long id) {
+        if (!repository.exists(id)) {
+            throw new EntityNotFoundException(String.format("Car with id %s not found", id));
+        }
+        final Car car = repository.findOne(id);
+        car.setNextStatus(Status.ON_MAINTENANCE.getDisplayName());
+        car.setDateOfNextStatus(new Date());
+        return repository.save(car);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public Car dropOut(Long id) {
+        if (!repository.exists(id)) {
+            throw new EntityNotFoundException(String.format("Car with id %s not found", id));
+        }
+        final Car car = repository.findOne(id);
+        car.setNextStatus(Status.DROP_OUT.getDisplayName());
+        car.setDateOfNextStatus(new Date());
         return repository.save(car);
     }
 

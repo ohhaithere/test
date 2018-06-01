@@ -9,16 +9,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.vtb.carrent.car.dto.CarDto;
+
+import java.util.Date;
 
 /**
  * Car resource interface.
@@ -71,6 +67,43 @@ public interface CarResource {
      */
     @PutMapping("/{id}")
     CarDto updateCar(@PathVariable("id") Long id, @RequestBody CarDto carDto);
+
+    /**
+     * Put car in rent.
+     *
+     * @param id car id
+     * @return updated car
+     */
+    @PostMapping("/{id}/in-rent")
+    CarDto inRentCar(@PathVariable("id") Long id,
+                     @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate);
+
+    /**
+     * Put car in stock.
+     *
+     * @param id car id
+     * @return updated car
+     */
+    @PostMapping("/{id}/in-stock")
+    CarDto inStockCar(@PathVariable("id") Long id);
+
+    /**
+     * Put car on maintenance.
+     *
+     * @param id car id
+     * @return updated car
+     */
+    @PostMapping("/{id}/on-maintenance")
+    CarDto onMaintenance(@PathVariable("id") Long id);
+
+    /**
+     * Drop car.
+     *
+     * @param id car id
+     * @return updated car
+     */
+    @PostMapping("/{id}/drop-out")
+    CarDto dropOut(@PathVariable("id") Long id);
 
     /**
      * Deletes Car.

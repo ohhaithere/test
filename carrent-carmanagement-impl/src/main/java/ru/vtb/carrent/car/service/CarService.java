@@ -8,11 +8,9 @@ package ru.vtb.carrent.car.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.vtb.carrent.car.domain.entity.Car;
-import ru.vtb.carrent.car.domain.model.KeyValuePair;
-import ru.vtb.carrent.car.domain.model.SortingInfo;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * Car service.
@@ -77,9 +75,43 @@ public interface CarService {
     Car update(Car car);
 
     /**
+     * Put Car into rent.
+     *
+     * @param id      car id
+     * @param endDate
+     * @return updated car
+     */
+    Car inRent(Long id, Date endDate);
+
+    /**
+     * Put Car into stock.
+     *
+     * @param id car id
+     * @return updated car
+     */
+    Car inStock(Long id);
+
+    /**
+     * Put Car on maintenance.
+     *
+     * @param id car id
+     * @return updated car
+     */
+    Car onMaintenance(Long id);
+
+    /**
+     * Drop Car.
+     *
+     * @param id car id
+     * @return updated car
+     */
+    Car dropOut(Long id);
+
+    /**
      * Deletes Car.
      *
      * @param id car id
      */
     void delete(Long id);
+
 }

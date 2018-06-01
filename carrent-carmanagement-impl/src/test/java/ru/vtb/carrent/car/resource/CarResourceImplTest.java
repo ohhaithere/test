@@ -5,18 +5,6 @@
 
 package ru.vtb.carrent.car.resource;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.mockito.Mockito;
@@ -25,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
@@ -43,6 +30,14 @@ import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.util.MockUtil;
 
 import java.util.Arrays;
+import java.util.Date;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Car resource impl
@@ -107,6 +102,34 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
                 .content(jsonObjectMapper.writeValueAsString(MockUtil.validTemplateDto())))
                 .andExpect(status().isOk());
         verify(carService).update(any(Car.class));
+    }
+
+    @Test
+    public void testInRentCar() throws Exception {
+        mockMvc.perform(post("/ui/car/123/in-rent?endDate=2018-05-12"))
+                .andExpect(status().isOk());
+        verify(carService).inRent(anyLong(), any(Date.class));
+    }
+
+    @Test
+    public void testInStock() throws Exception {
+        mockMvc.perform(post("/ui/car/123/in-stock"))
+                .andExpect(status().isOk());
+        verify(carService).inStock(anyLong());
+    }
+
+    @Test
+    public void testOnMaintenance() throws Exception {
+        mockMvc.perform(post("/ui/car/123/on-maintenance"))
+                .andExpect(status().isOk());
+        verify(carService).onMaintenance(anyLong());
+    }
+
+    @Test
+    public void testDropOut() throws Exception {
+        mockMvc.perform(post("/ui/car/123/drop-out"))
+                .andExpect(status().isOk());
+        verify(carService).dropOut(anyLong());
     }
 
     @Test
