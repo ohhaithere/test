@@ -18,4 +18,6 @@ import java.util.List;
 public interface CarRepository extends JpaRepository<Car, Long>, CarRepositoryCustom {
 
     List<Car> findByCurrentStatusIgnoreCase(String currentStatus);
+
+    List<Car> findByCurrentStatusInIgnoreCase(List<String> currentStatus);
 }

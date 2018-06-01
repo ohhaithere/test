@@ -68,6 +68,7 @@ public class CarStateMachineBuilder {
                 .and()
                 .withExternal()
                 .source(Status.IN_RENT).target(Status.IN_STOCK)
+                .action(this.release())
                 .event(Event.RENT_DONE)
                 .and()
                 .withExternal()
@@ -77,6 +78,7 @@ public class CarStateMachineBuilder {
                 .and()
                 .withExternal()
                 .source(Status.ON_MAINTENANCE).target(Status.IN_STOCK)
+                .action(this.release())
                 .event(Event.SERVICE_DONE)
                 .and()
                 .withExternal()
@@ -84,6 +86,10 @@ public class CarStateMachineBuilder {
                 .event(Event.DROP_CAR);
 
         return builder.build();
+    }
+
+    private Action<Status, Event> release() {
+        return context -> carStatusService.release(getCarFromContext(context));
     }
 
     public Action<Status, Event> putOnMaintenance() {

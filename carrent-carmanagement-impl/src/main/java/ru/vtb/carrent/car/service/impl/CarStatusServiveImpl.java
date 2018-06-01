@@ -5,10 +5,14 @@ import org.springframework.stereotype.Component;
 import ru.vtb.carrent.car.config.KafkaConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.kafka.Sender;
-import ru.vtb.carrent.car.message.CarStatusChangedMessage;
-import ru.vtb.carrent.car.resource.LocationResourceClient;
+import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.service.PreferencesService;
 import ru.vtb.carrent.car.status.Status;
+import ru.vtb.carrent.preorder.dto.CarReleasedDto;
 import ru.vtb.carrent.preorder.dto.MessageContainer;
+
+import java.time.Duration;
+import java.util.Date;
 
 /**
  * Documentation template
@@ -19,23 +23,53 @@ import ru.vtb.carrent.preorder.dto.MessageContainer;
 @Component
 public class CarStatusServiveImpl {
 
-    private final LocationResourceClient locationResourceClient;
+    private static final String SERVICE_INTERVAL_PROPERTY = "service-interval";
+    private static final Duration SERVICE_INTERVAL_DEFAULT = Duration.ofMinutes(5);
     private final Sender sender;
+    private final CarService carService;
+    private final PreferencesService preferencesService;
 
-    public CarStatusServiveImpl(LocationResourceClient locationResourceClient, Sender sender) {
-        this.locationResourceClient = locationResourceClient;
+    public CarStatusServiveImpl(Sender sender, CarService carService, PreferencesService preferencesService) {
         this.sender = sender;
+        this.carService = carService;
+        this.preferencesService = preferencesService;
     }
 
     public void putOnMaintenance(Car car) {
         log.debug("Car would be put on maintenance");
-        MessageContainer<CarStatusChangedMessage> messageContainer = new MessageContainer<>(
-                new CarStatusChangedMessage(
+        car.setCurrentStatus(Status.ON_MAINTENANCE.getDisplayName());
+        car.setDateOfCurrentStatus(new Date());
+        car.setDateOfLastCheck(new Date());
+        car.setDateOfNextCheck(Date.from(car.getDateOfLastCheck().toInstant().plus(getServiceIntervalValue())));
+        car.setDateOfNextStatus(null);
+        car.setNextStatus(null);
+        carService.update(car);
+    }
+
+    public void release(Car car) {
+        log.debug("Car would be released in stock.");
+        car.setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        car.setDateOfCurrentStatus(new Date());
+        car.setDateOfNextStatus(null);
+        car.setNextStatus(null);
+        carService.update(car);
+        //SEND KAFKA MESSAGE FOR PRE ORDER SERVICE
+        MessageContainer<CarReleasedDto> messageContainer = new MessageContainer<>(
+                new CarReleasedDto(
                         car.getId(),
-                        Status.get(car.getCurrentStatus()),
-                        Status.ON_MAINTENANCE
+                        car.getLocationId()
                 )
         );
-        sender.send(KafkaConfig.MGMNT_CAR_STATUSES, messageContainer);
+        sender.send(KafkaConfig.TOPIC, messageContainer);
+    }
+
+    private Duration getServiceIntervalValue() {
+        String value = preferencesService.find(SERVICE_INTERVAL_PROPERTY);
+        try {
+            return Duration.ofMinutes(Integer.valueOf(value));
+        } catch (NumberFormatException e) {
+            log.error(String.format("Property '%s' has invalid value: %s", SERVICE_INTERVAL_PROPERTY, value), e);
+            return SERVICE_INTERVAL_DEFAULT;
+        }
     }
 }
