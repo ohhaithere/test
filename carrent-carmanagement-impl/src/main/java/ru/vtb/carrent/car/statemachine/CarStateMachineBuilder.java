@@ -76,9 +76,14 @@ public class CarStateMachineBuilder {
                 .and()
                 .withExternal()
                 .source(Status.ON_MAINTENANCE).target(Status.DROP_OUT)
+                .action(this.drop())
                 .event(Event.DROP_CAR);
 
         return builder.build();
+    }
+
+    private Action<Status, Event> drop() {
+        return context -> carStatusService.drop(getCarFromContext(context));
     }
 
     private Action<Status, Event> rent() {

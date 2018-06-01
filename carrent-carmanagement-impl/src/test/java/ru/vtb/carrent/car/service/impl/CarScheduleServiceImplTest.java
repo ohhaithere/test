@@ -74,6 +74,33 @@ public class CarScheduleServiceImplTest {
     }
 
     @Test
+    public void testCheckAndDrop() {
+        Mockito.when(
+                carRepository.findByNextStatusIgnoreCase(Status.DROP_OUT.getDisplayName())
+        ).thenReturn(
+                Collections.singletonList(
+                        new Car(
+                                1l,
+                                "s500",
+                                "a000aa",
+                                new Date(),
+                                1,
+                                new Date(),
+                                new Date(),
+                                Status.ON_MAINTENANCE.getDisplayName(),
+                                new Date(),
+                                Status.DROP_OUT.getDisplayName(),
+                                new Date(),
+                                1L)
+                )
+        );
+        Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
+                .thenReturn(Mockito.mock(StateMachine.class));
+
+        carMaintenanceService.checkAndDrop();
+    }
+
+    @Test
     public void testCheckAndReleaseFromRent() {
         Mockito.when(
                 carRepository.findByCurrentStatusInIgnoreCase(

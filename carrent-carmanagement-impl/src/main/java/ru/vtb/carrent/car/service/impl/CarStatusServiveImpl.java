@@ -63,6 +63,14 @@ public class CarStatusServiveImpl {
         sender.send(KafkaConfig.TOPIC, messageContainer);
     }
 
+    public void drop(Car car) {
+        car.setCurrentStatus(Status.DROP_OUT.getDisplayName());
+        car.setDateOfCurrentStatus(new Date());
+        car.setNextStatus(null);
+        car.setDateOfNextStatus(null);
+        carService.update(car);
+    }
+
     private Duration getServiceIntervalValue() {
         String value = preferencesService.find(SERVICE_INTERVAL_PROPERTY);
         try {

@@ -20,4 +20,6 @@ public interface CarRepository extends JpaRepository<Car, Long>, CarRepositoryCu
     List<Car> findByCurrentStatusIgnoreCase(String currentStatus);
 
     List<Car> findByCurrentStatusInIgnoreCase(List<String> currentStatus);
+
+    List<Car> findByNextStatusIgnoreCase(String displayName);
 }

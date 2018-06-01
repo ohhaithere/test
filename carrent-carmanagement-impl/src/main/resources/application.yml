@@ -14,6 +14,7 @@ spring:
   kafka:
     enabled: true
     bootstrap-servers: kafka-service:9092
+    consumer.group-id: carrent
   datasource:
       driverClassName: org.postgresql.Driver
       url: jdbc:postgresql://postgresql:5432/db?currentSchema=carmanagement
