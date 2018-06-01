@@ -2,7 +2,7 @@
  * VTB Group. Do not reproduce without permission in writing.
  * Copyright (c) 2017 VTB Group. All rights reserved.
  */
-package ru.vtb.carrent.car.resource;
+package ru.vtb.carrent.car.feign;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
