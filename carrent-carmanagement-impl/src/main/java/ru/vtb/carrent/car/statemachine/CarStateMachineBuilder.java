@@ -10,13 +10,9 @@ import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.StateMachineBuilder;
-import org.springframework.statemachine.listener.StateMachineListener;
-import org.springframework.statemachine.listener.StateMachineListenerAdapter;
-import org.springframework.statemachine.state.State;
 import org.springframework.stereotype.Component;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.event.Event;
-import ru.vtb.carrent.car.listener.CarStateMachineListener;
 import ru.vtb.carrent.car.service.impl.CarStatusServiveImpl;
 import ru.vtb.carrent.car.status.Status;
 
@@ -30,11 +26,9 @@ import java.util.EnumSet;
 @Component
 public class CarStateMachineBuilder {
 
-    private final CarStateMachineListener carStateMachineListener;
     private final CarStatusServiveImpl carStatusService;
 
-    public CarStateMachineBuilder(CarStateMachineListener carStateMachineListener, CarStatusServiveImpl carStatusService) {
-        this.carStateMachineListener = carStateMachineListener;
+    public CarStateMachineBuilder(CarStatusServiveImpl carStatusService) {
         this.carStatusService = carStatusService;
     }
 
@@ -49,7 +43,6 @@ public class CarStateMachineBuilder {
 
         builder.configureConfiguration()
                 .withConfiguration()
-                .listener(listener())
                 .autoStartup(true);
 
         builder.configureStates()
@@ -88,29 +81,16 @@ public class CarStateMachineBuilder {
         return builder.build();
     }
 
+    private Action<Status, Event> rent() {
+        return context -> carStatusService.rent(getCarFromContext(context));
+    }
+
     private Action<Status, Event> release() {
         return context -> carStatusService.release(getCarFromContext(context));
     }
 
-    public Action<Status, Event> putOnMaintenance() {
+    private Action<Status, Event> putOnMaintenance() {
         return context -> carStatusService.putOnMaintenance(getCarFromContext(context));
-    }
-
-    public StateMachineListener<Status, Event> listener() {
-        return new StateMachineListenerAdapter<Status, Event>() {
-            private StateContext<Status, Event> stateContext;
-
-            @Override
-            public void stateContext(StateContext<Status, Event> stateContext) {
-                this.stateContext = stateContext;
-            }
-
-            @Override
-            public void stateChanged(State<Status, Event> from, State<Status, Event> to) {
-                Car car = getCarFromContext(stateContext);
-                carStateMachineListener.changeCarStatus(car, to.getId(), stateContext.getEvent());
-            }
-        };
     }
 
     private static Car getCarFromContext(StateContext<Status, Event> context) {

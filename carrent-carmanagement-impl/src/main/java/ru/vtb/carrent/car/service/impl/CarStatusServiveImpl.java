@@ -72,4 +72,9 @@ public class CarStatusServiveImpl {
             return SERVICE_INTERVAL_DEFAULT;
         }
     }
+
+    public void rent(Car car) {
+        car.setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        car.setDateOfCurrentStatus(new Date());
+    }
 }

@@ -7,6 +7,7 @@ package ru.vtb.carrent.car.config;
 
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
+import ru.vtb.carrent.car.resource.LocationResourceClient;
 
 /**
  * Feigh config.
@@ -14,6 +15,6 @@ import org.springframework.context.annotation.Configuration;
  * @author Valiantsin_Charkashy
  */
 @Configuration
-@EnableFeignClients
+@EnableFeignClients(basePackageClasses = LocationResourceClient.class)
 public class FeighConfig {
 }
