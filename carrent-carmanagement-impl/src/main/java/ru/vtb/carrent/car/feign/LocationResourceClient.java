@@ -2,6 +2,7 @@
  * VTB Group. Do not reproduce without permission in writing.
  * Copyright (c) 2017 VTB Group. All rights reserved.
  */
+
 package ru.vtb.carrent.car.feign;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -14,13 +15,18 @@ import java.util.List;
 
 
 /**
- * Client to fetch location
+ * Client to fetch location.
  *
  * @author Valiantsin_Charkashy
  */
 @FeignClient(name = "organization", fallback = LocationResourceClient.LocationResourceClientFallback.class)
 public interface LocationResourceClient extends LocationResource {
 
+    /**
+     * Hystrix fallback handler.
+     *
+     * @author Roman_Meerson
+     */
     class LocationResourceClientFallback implements LocationResourceClient {
         @Override
         public List<LocationDto> getLocations() {
