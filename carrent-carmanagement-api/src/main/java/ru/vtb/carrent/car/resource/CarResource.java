@@ -7,15 +7,22 @@ package ru.vtb.carrent.car.resource;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.vtb.carrent.car.dto.CarDto;
 import ru.vtb.carrent.car.filter.FilteredPageRequest;
-
-import java.util.List;
 
 import java.util.Date;
 
@@ -33,9 +40,12 @@ public interface CarResource {
      * @param carDto car
      * @return created car
      */
+    @ApiOperation(value = "Create a car")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    CarDto createCar(@RequestBody CarDto carDto);
+    CarDto createCar(
+            @ApiParam(value = "Car body", required = true)
+            @RequestBody CarDto carDto);
 
     /**
      * Gets Car by id.
@@ -43,6 +53,7 @@ public interface CarResource {
      * @param id car id
      * @return found car
      */
+    @ApiOperation("Get Car by ID")
     @GetMapping("/{id}")
     CarDto getCar(@PathVariable("id") Long id);
 
@@ -52,6 +63,7 @@ public interface CarResource {
      * @param request page request
      * @return found cars
      */
+    @ApiOperation("Get Cars")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "request", dataType = "FilteredPageRequest", paramType = "query",
                     value = "Request contains filter string in Base64 format that represents the filter and" +
@@ -67,8 +79,14 @@ public interface CarResource {
      * @param carDto car
      * @return updated car
      */
+    @ApiOperation(
+            value = "Update a car with specific ID",
+            notes = "Method provides validation errors")
     @PutMapping("/{id}")
-    CarDto updateCar(@PathVariable("id") Long id, @RequestBody CarDto carDto);
+    CarDto updateCar(@ApiParam(value = "Car id", required = true)
+                     @PathVariable("id") Long id,
+                     @ApiParam(value = "Car body", required = true)
+                     @RequestBody CarDto carDto);
 
     /**
      * Put car in rent.
@@ -76,9 +94,15 @@ public interface CarResource {
      * @param id car id
      * @return updated car
      */
+    @ApiOperation(
+            value = "Put a car with specific ID in rent."
+    )
     @PostMapping("/{id}/in-rent")
-    CarDto inRentCar(@PathVariable("id") Long id,
-                     @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate);
+    CarDto inRentCar(@ApiParam(value = "Car id", required = true)
+                     @PathVariable("id") Long id,
+                     @ApiParam(value = "End Date of rent", required = true)
+                     @RequestParam("endDate")
+                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)  Date endDate);
 
     /**
      * Put car in stock.
@@ -86,8 +110,12 @@ public interface CarResource {
      * @param id car id
      * @return updated car
      */
+    @ApiOperation(
+            value = "Put a car with specific ID in stock."
+    )
     @PostMapping("/{id}/in-stock")
-    CarDto inStockCar(@PathVariable("id") Long id);
+    CarDto inStockCar(@ApiParam(value = "Car id", required = true)
+                      @PathVariable("id") Long id);
 
     /**
      * Put car on maintenance.
@@ -95,8 +123,12 @@ public interface CarResource {
      * @param id car id
      * @return updated car
      */
+    @ApiOperation(
+            value = "Put a car with specific ID on maintenance."
+    )
     @PostMapping("/{id}/on-maintenance")
-    CarDto onMaintenance(@PathVariable("id") Long id);
+    CarDto onMaintenance(@ApiParam(value = "Car id", required = true)
+                         @PathVariable("id") Long id);
 
     /**
      * Drop car.
@@ -104,14 +136,19 @@ public interface CarResource {
      * @param id car id
      * @return updated car
      */
+    @ApiOperation(
+            value = "Drop a car with specific ID."
+    )
     @PostMapping("/{id}/drop-out")
-    CarDto dropOut(@PathVariable("id") Long id);
+    CarDto dropOut(@ApiParam(value = "Car id", required = true)
+                   @PathVariable("id") Long id);
 
     /**
      * Deletes Car.
      *
      * @param id car id
      */
+    @ApiOperation(value = "Delete a Car")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteCar(@PathVariable("id") Long id);

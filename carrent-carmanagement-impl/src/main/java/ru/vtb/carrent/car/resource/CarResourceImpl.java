@@ -5,18 +5,12 @@
 
 package ru.vtb.carrent.car.resource;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vtb.carrent.car.domain.model.KeyValuePair;
 import ru.vtb.carrent.car.dto.CarDto;
@@ -25,9 +19,9 @@ import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.util.FilterUtils;
 import ru.vtb.carrent.car.util.mapper.CarMapper;
 
-import java.util.Date;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,8 +52,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @ApiOperation(value = "Create a car")
-    public CarDto createCar(@ApiParam(value = "Car body", required = true) @RequestBody CarDto carDto) {
+    public CarDto createCar(CarDto carDto) {
         return mapper.toDto(service.create(mapper.fromDto(carDto)));
     }
 
@@ -67,8 +60,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @ApiOperation("Get Car by ID")
-    public CarDto getCar(@PathVariable("id") Long id) {
+    public CarDto getCar(Long id) {
         return mapper.toDto(service.find(id));
     }
 
@@ -100,29 +92,19 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @ApiOperation(
-            value = "Update a car with specific ID",
-            notes = "Method provides validation errors")
-    public CarDto updateCar(@ApiParam(value = "Car id", required = true)
-                            @PathVariable("id") Long id,
-                            @ApiParam(value = "Car body", required = true)
-                            @RequestBody CarDto carDto) {
+    public CarDto updateCar(Long id, CarDto carDto) {
         return mapper.toDto(service.update(mapper.fromDto(carDto.setId(id))));
     }
 
     /**
      * {@inheritDoc}
+     *
+     * <p>
+     * Due to limitations of Spring 4, we must specify date time format on implementation methods as well.
+     * </p>
      */
     @Override
-    @ApiOperation(
-            value = "Put a car with specific ID in rent."
-    )
-    public CarDto inRentCar(@ApiParam(value = "Car id", required = true)
-                            @PathVariable("id") Long id,
-                            @ApiParam(value = "End Date of rent", required = true)
-                            @RequestParam("endDate")
-                            @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                    Date endDate) {
+    public CarDto inRentCar(Long id, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
         return mapper.toDto(service.inRent(id, endDate));
     }
 
@@ -130,11 +112,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @ApiOperation(
-            value = "Put a car with specific ID in stock."
-    )
-    public CarDto inStockCar(@ApiParam(value = "Car id", required = true)
-                             @PathVariable("id") Long id) {
+    public CarDto inStockCar(Long id) {
         return mapper.toDto(service.inStock(id));
     }
 
@@ -142,11 +120,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @ApiOperation(
-            value = "Put a car with specific ID on maintenance."
-    )
-    public CarDto onMaintenance(@ApiParam(value = "Car id", required = true)
-                                @PathVariable("id") Long id) {
+    public CarDto onMaintenance(Long id) {
         return mapper.toDto(service.onMaintenance(id));
     }
 
@@ -154,11 +128,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @ApiOperation(
-            value = "Drop a car with specific ID."
-    )
-    public CarDto dropOut(@ApiParam(value = "Car id", required = true)
-                          @PathVariable("id") Long id) {
+    public CarDto dropOut(Long id) {
         return mapper.toDto(service.dropOut(id));
     }
 
@@ -166,8 +136,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @ApiOperation(value = "Delete a Car")
-    public void deleteCar(@PathVariable("id") Long id) {
+    public void deleteCar(Long id) {
         service.delete(id);
     }
 

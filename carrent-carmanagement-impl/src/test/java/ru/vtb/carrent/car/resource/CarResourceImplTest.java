@@ -112,7 +112,7 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testInRentCar() throws Exception {
-        mockMvc.perform(post("/ui/car/123/in-rent?endDate=2018-05-12"))
+        mockMvc.perform(post("/ui/car/123/in-rent?endDate=2018-05-12T00:00:00.000+0000"))
                 .andExpect(status().isOk());
         verify(carService).inRent(anyLong(), any(Date.class));
     }
