@@ -1,6 +1,8 @@
 package ru.vtb.carrent.car.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -17,6 +19,8 @@ import java.util.Date;
 @Setter
 @ToString
 @Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class CarEventDTO {
 
     private Long id;

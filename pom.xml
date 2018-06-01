@@ -68,6 +68,8 @@
             **/config/**,
             **/repository/**,
             **/statemachine/**
+            **/listener/**
+            **/client/**
         </sonar.exclusions>
 
         <!-- Build number to be forwarded from Jenkins while building-->

@@ -1,12 +1,20 @@
 package ru.vtb.carrent.car.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.statemachine.StateContext;
+import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
+import org.springframework.statemachine.listener.StateMachineListener;
+import org.springframework.statemachine.listener.StateMachineListenerAdapter;
+import org.springframework.statemachine.state.State;
+import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.event.Event;
+import ru.vtb.carrent.car.listener.CarStateMachineListener;
+import ru.vtb.carrent.car.service.impl.CarStatusServiveImpl;
 import ru.vtb.carrent.car.status.Status;
 
 import java.util.EnumSet;
@@ -16,12 +24,20 @@ import java.util.EnumSet;
 public class StateMachineConfig
         extends EnumStateMachineConfigurerAdapter<Status, Event> {
 
+    private final CarStateMachineListener carStateMachineListener;
+    private final CarStatusServiveImpl carStatusServive;
+
+    public StateMachineConfig(CarStateMachineListener carStateMachineListener, CarStatusServiveImpl carStatusServive) {
+        this.carStateMachineListener = carStateMachineListener;
+        this.carStatusServive = carStatusServive;
+    }
+
     @Override
     public void configure(StateMachineConfigurationConfigurer<Status, Event> config)
             throws Exception {
         config
                 .withConfiguration()
-//                .listener(listener())
+                .listener(listener())
                 .autoStartup(true);
     }
 
@@ -52,6 +68,7 @@ public class StateMachineConfig
                 .and()
                 .withExternal()
                 .source(Status.IN_STOCK).target(Status.ON_MAINTENANCE)
+                .action(putOnMaintenance())
                 .event(Event.GO_TO_SERVICE)
                 .and()
                 .withExternal()
@@ -63,22 +80,29 @@ public class StateMachineConfig
                 .event(Event.DROP_CAR);
     }
 
-//    @Bean
-//    public StateMachineListener<Status, Event> listener() {
-//        return new StateMachineListenerAdapter<Status, Event>() {
-//            private StateContext<Status, Event> stateContext;
-//
-//            @Override
-//            public void stateChanged(State<Status, Event> from, State<Status, Event> to) {
-//                System.out.println("State change to " + to.getId());
-//                Car car = stateContext.getExtendedState().get("car", Car.class);
-//                System.out.println("Current car: "+car+" state: "+stateContext.getStage());
-//            }
-//
-//            @Override
-//            public void stateContext(StateContext<Status, Event> stateContext) {
-//                this.stateContext = stateContext;
-//            }
-//        };
-//    }
+    public Action<Status, Event> putOnMaintenance() {
+        return context -> carStatusServive.putOnMaintenance(getCarFromContext(context));
+    }
+
+    public StateMachineListener<Status, Event> listener() {
+        return new StateMachineListenerAdapter<Status, Event>() {
+            private StateContext<Status, Event> stateContext;
+
+            @Override
+            public void stateContext(StateContext<Status, Event> stateContext) {
+                this.stateContext = stateContext;
+            }
+
+            @Override
+            public void stateChanged(State<Status, Event> from, State<Status, Event> to) {
+                Car car = getCarFromContext(stateContext);
+                carStateMachineListener.changeCarStatus(car, to.getId(), stateContext.getEvent());
+            }
+        };
+    }
+
+    private static Car getCarFromContext(StateContext<Status, Event> context) {
+        return context.getExtendedState().get("car", Car.class);
+    }
+
 }

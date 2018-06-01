@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.BeforeMethod;
@@ -17,10 +18,13 @@ import ru.vtb.carrent.car.config.util.mapper.CarMapperTestConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.repository.CarRepository;
+import ru.vtb.carrent.car.statemachine.StateMachineSupplier;
 import ru.vtb.carrent.car.status.Status;
 
 import java.util.Collections;
 import java.util.Date;
+
+import static org.mockito.Matchers.any;
 
 /**
  * Unit test for {@link CarMaintenanceServiceImpl}.
@@ -36,6 +40,9 @@ public class CarMaintenanceServiceImplTest {
 
     @Mock
     private CarRepository carRepository;
+
+    @Mock
+    private StateMachineSupplier stateMachineSupplier;
 
     @Mock
     private Sender sender;
@@ -66,6 +73,9 @@ public class CarMaintenanceServiceImplTest {
                                 1L)
                 )
         );
+        Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
+                .thenReturn(Mockito.mock(StateMachine.class));
+
         carMaintenanceService.checkAndPutOnMaintenance();
     }
 }
