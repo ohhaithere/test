@@ -6,6 +6,8 @@
 package ru.vtb.carrent.car.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -25,11 +27,15 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.vtb.carrent.car.config.resource.CarResourceImplTestConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
+import ru.vtb.carrent.car.domain.model.KeyValuePair;
 import ru.vtb.carrent.car.dto.CarDto;
 import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.util.JsonUtils;
 import ru.vtb.carrent.car.util.MockUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
@@ -138,6 +144,23 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
         mockMvc.perform(delete("/ui/car/123"))
                 .andExpect(status().isNoContent());
         verify(carService).delete(anyLong());
+    }
+
+    @Test
+    public void testGetCarsWithFilter() throws Exception {
+        when(carService.getByFilter(any(List.class), any(Pageable.class))).thenReturn(new PageImpl<>(Arrays.asList(new Car())));
+        List<KeyValuePair> filters = new ArrayList<>(3);
+        filters.add(new KeyValuePair("model", "Lada"));
+        filters.add(new KeyValuePair("locationId", "123"));
+        String filter = Base64.encodeBase64String(JsonUtils.beanToJson(filters.toArray(new KeyValuePair[filters.size()])).getBytes());
+        MockHttpServletRequestBuilder getRequest = get("/ui/car")
+                .param("page", "1")
+                .param("size", "1")
+                .param("filter", filter)
+                .accept(MediaType.APPLICATION_JSON);
+        String urlList = "/ui/car?page=0&size=1";
+        mockMvc.perform(getRequest).andExpect(status().isOk());
+        verify(carService).getByFilter(any(List.class), any(Pageable.class));
     }
 
 }

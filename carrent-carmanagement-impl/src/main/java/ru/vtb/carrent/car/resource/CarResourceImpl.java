@@ -7,25 +7,35 @@ package ru.vtb.carrent.car.resource;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.vtb.carrent.car.domain.model.KeyValuePair;
 import ru.vtb.carrent.car.dto.CarDto;
+import ru.vtb.carrent.car.filter.FilteredPageRequest;
 import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.util.FilterUtils;
 import ru.vtb.carrent.car.util.mapper.CarMapper;
 
 import java.util.Date;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Car resource implementation.
  *
  * @author Valiantsin_Charkashy
  */
+@Slf4j
 @RestController
 public class CarResourceImpl implements CarResource {
 
@@ -66,8 +76,24 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public Page<CarDto> getCars(Pageable pageRequest) {
-        return service.findPaginated(pageRequest).map(mapper::toDto);
+    public Page<CarDto> getCars(FilteredPageRequest request) {
+        if (request == null) {
+            return new PageImpl<>(Collections.emptyList());
+        }
+
+        List<KeyValuePair> filterList = null;
+        if (!StringUtils.isEmpty(request.getFilter())) {
+            try {
+                filterList = FilterUtils.getFilterList(request.getFilter());
+                log.debug(filterList.toString());
+            } catch (IOException e) {
+                log.error(String.format("filter (%s) could be parsed.", request.getFilter()), e);
+            }
+        }
+
+        return filterList == null || filterList.isEmpty()
+                ? service.findPaginated(request.getPageable()).map(mapper::toDto)
+                : service.getByFilter(filterList,  request.getPageable()).map(mapper::toDto);
     }
 
     /**
