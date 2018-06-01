@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Valiantsin_Charkashy
  */
-@FeignClient(name = "carrent-organization", fallback = LocationResourceClient.LocationResourceClientFallback.class)
+@FeignClient(name = "organization", fallback = LocationResourceClient.LocationResourceClientFallback.class)
 public interface LocationResourceClient extends LocationResource {
 
     class LocationResourceClientFallback implements LocationResourceClient {

@@ -6,10 +6,10 @@
 package ru.vtb.carrent.car.listener;
 
 import org.springframework.stereotype.Component;
-import ru.vtb.carrent.car.client.LocationResourceClient;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.event.Event;
 import ru.vtb.carrent.car.kafka.Sender;
+import ru.vtb.carrent.car.resource.LocationResourceClient;
 import ru.vtb.carrent.car.status.Status;
 
 /**
