@@ -31,7 +31,7 @@ public class StateMachineSupplier {
     public StateMachine<Status, Event> getCarStateMachine(Car car) {
         StateMachine<Status, Event> machine = statesEventsStateMachineTreadLocalFactory.getStateMachine();
         ExtendedState extendedState = new DefaultExtendedState();
-        extendedState.getVariables().put("car", car);
+        extendedState.getVariables().put(ContextVars.CAR, car);
         machine.getStateMachineAccessor().withRegion().resetStateMachine(
                 new DefaultStateMachineContext<>(
                         Status.get(car.getCurrentStatus()),

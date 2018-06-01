@@ -1,3 +1,8 @@
+/*
+ * VTB Group. Do not reproduce without permission in writing.
+ * Copyright (c) 2017 VTB Group. All rights reserved.
+ */
+
 package ru.vtb.carrent.car.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,18 +15,19 @@ import ru.vtb.carrent.car.service.PreferencesService;
 import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.preorder.dto.CarReleasedDto;
 import ru.vtb.carrent.preorder.dto.MessageContainer;
+import ru.vtb.carrent.preorder.dto.PreorderDto;
 
 import java.time.Duration;
 import java.util.Date;
 
 /**
- * Documentation template
+ * Status service.
  *
  * @author Tsimafei_Dynikau
  */
 @Slf4j
 @Component
-public class CarStatusServiveImpl {
+public class CarStatusServiceImpl {
 
     private static final String SERVICE_INTERVAL_PROPERTY = "service-interval";
     private static final Duration SERVICE_INTERVAL_DEFAULT = Duration.ofMinutes(5);
@@ -29,7 +35,7 @@ public class CarStatusServiveImpl {
     private final CarService carService;
     private final PreferencesService preferencesService;
 
-    public CarStatusServiveImpl(Sender sender, CarService carService, PreferencesService preferencesService) {
+    public CarStatusServiceImpl(Sender sender, CarService carService, PreferencesService preferencesService) {
         this.sender = sender;
         this.carService = carService;
         this.preferencesService = preferencesService;
@@ -81,8 +87,12 @@ public class CarStatusServiveImpl {
         }
     }
 
-    public void rent(Car car) {
-        car.setCurrentStatus(Status.IN_STOCK.getDisplayName());
+    public void rent(Car car, PreorderDto preorder) {
+        car.setCurrentStatus(Status.IN_RENT.getDisplayName());
         car.setDateOfCurrentStatus(new Date());
+        car.setNextStatus(Status.IN_STOCK.getDisplayName());
+        car.setDateOfNextStatus(preorder.getDateTo());
+        car.setLocationId(preorder.getCarReturnPoint());
+        carService.update(car);
     }
 }
