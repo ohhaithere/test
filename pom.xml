@@ -42,7 +42,7 @@
 
         <liquibase.version>3.5.3</liquibase.version>
         <postgresql.version>42.1.4</postgresql.version>
-        <spring-statemachine.version>2.0.1.RELEASE</spring-statemachine.version>
+        <spring-statemachine.version>1.2.11.RELEASE</spring-statemachine.version>
 
         <!--
           Components configuration (override for packaging to Docker)
@@ -67,9 +67,9 @@
             **/service/**,
             **/config/**,
             **/repository/**,
-            **/statemachine/**
-            **/listener/**
-            **/client/**
+            **/statemachine/**,
+            **/listener/**,
+            **/client/**,
         </sonar.exclusions>
 
         <!-- Build number to be forwarded from Jenkins while building-->

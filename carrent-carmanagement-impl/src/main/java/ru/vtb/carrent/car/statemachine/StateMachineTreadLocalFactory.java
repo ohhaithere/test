@@ -6,31 +6,30 @@
 package ru.vtb.carrent.car.statemachine;
 
 import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.stereotype.Component;
+import ru.vtb.carrent.car.event.Event;
+import ru.vtb.carrent.car.status.Status;
 
 /**
  * ThreadLocal stateMachine holder for performance optimization.
  *
- * @param <S> the type of state
- * @param <E> the type of event
- *
  * @author Tsimafei_Dynikau
  */
 @Component
-class StateMachineTreadLocalFactory<S, E> {
-    private ThreadLocal<StateMachine<S, E>> stateMachineThreadLocal = new ThreadLocal<>();
+class StateMachineTreadLocalFactory {
+    private ThreadLocal<StateMachine<Status, Event>> stateMachineThreadLocal = new ThreadLocal<>();
 
-    private final StateMachineFactory<S, E> stateMachineFactory;
+    private final CarStateMachineBuilder stateMachineBuilder;
 
-    public StateMachineTreadLocalFactory(StateMachineFactory<S, E> stateMachineFactory) {
-        this.stateMachineFactory = stateMachineFactory;
+    public StateMachineTreadLocalFactory(CarStateMachineBuilder stateMachineBuilder) {
+
+        this.stateMachineBuilder = stateMachineBuilder;
     }
 
-    public StateMachine<S, E> getStateMachine() {
-        StateMachine<S, E> stateMachine = stateMachineThreadLocal.get();
+    StateMachine<Status, Event> getStateMachine() {
+        StateMachine<Status, Event> stateMachine = stateMachineThreadLocal.get();
         if (stateMachine == null) {
-            stateMachine = stateMachineFactory.getStateMachine();
+            stateMachine = stateMachineBuilder.build();
             stateMachineThreadLocal.set(stateMachine);
         }
         return stateMachine;

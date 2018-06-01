@@ -22,9 +22,9 @@ import ru.vtb.carrent.car.status.Status;
 @Component
 public class StateMachineSupplier {
 
-    private final StateMachineTreadLocalFactory<Status, Event> statesEventsStateMachineTreadLocalFactory;
+    private final StateMachineTreadLocalFactory statesEventsStateMachineTreadLocalFactory;
 
-    public StateMachineSupplier(StateMachineTreadLocalFactory<Status, Event> stateMachineFactory) {
+    public StateMachineSupplier(StateMachineTreadLocalFactory stateMachineFactory) {
         this.statesEventsStateMachineTreadLocalFactory = stateMachineFactory;
     }
 
