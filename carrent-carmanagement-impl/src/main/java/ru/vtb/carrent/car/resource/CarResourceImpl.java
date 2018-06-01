@@ -76,24 +76,20 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public Page<CarDto> getCars(FilteredPageRequest request) {
-        if (request == null) {
-            return new PageImpl<>(Collections.emptyList());
-        }
-
+    public Page<CarDto> getCars(String filter, Pageable pageable) {
         List<KeyValuePair> filterList = null;
-        if (!StringUtils.isEmpty(request.getFilter())) {
+        if (!StringUtils.isEmpty(filter)) {
             try {
-                filterList = FilterUtils.getFilterList(request.getFilter());
+                filterList = FilterUtils.getFilterList(filter);
                 log.debug(filterList.toString());
             } catch (IOException e) {
-                log.error(String.format("filter (%s) could be parsed.", request.getFilter()), e);
+                log.error(String.format("filter (%s) could be parsed.", filter), e);
             }
         }
 
         return filterList == null || filterList.isEmpty()
-                ? service.findPaginated(request.getPageable()).map(mapper::toDto)
-                : service.getByFilter(filterList,  request.getPageable()).map(mapper::toDto);
+                ? service.findPaginated(pageable).map(mapper::toDto)
+                : service.getByFilter(filterList,  pageable).map(mapper::toDto);
     }
 
     /**

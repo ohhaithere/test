@@ -61,17 +61,11 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
             String key, value;
             for (KeyValuePair pair : filter) {
                 key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
-                if ("site".equalsIgnoreCase(key)) {
-                    key = "siteId";
-                }
-
                 path = root.get(key);
                 if (path == null) {
                     throw new RuntimeException(String.format("Field with name '%s' not found", key));
                 }
-
                 javaType = path.getModel().getBindableJavaType();
-
                 value = (String) pair.getValue();
                 if (StringUtils.isNotBlank(value)) {
                     predicates.add(RepositoryHelper.getEqualCriteria(value.trim(), javaType, criteriaBuilder, path, false));
@@ -85,7 +79,6 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         TypedQuery<Car> query = em.createQuery(criteria);
         query.setFirstResult(pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
-
         Long total = em.createQuery(countQuery).getSingleResult();
         List<Car> content = total > pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl<>(content, pageable, total);

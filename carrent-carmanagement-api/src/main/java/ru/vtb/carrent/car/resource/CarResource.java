@@ -58,7 +58,7 @@ public interface CarResource {
                             ""),
     })
     @GetMapping
-    Page<CarDto> getCars(FilteredPageRequest request);
+    Page<CarDto> getCars(String filter, Pageable pageable);
 
     /**
      * Updates Car.
