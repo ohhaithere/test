@@ -59,6 +59,7 @@ public class CarStateMachineBuilder {
                 .withExternal()
                 .source(Status.IN_STOCK).target(Status.IN_RENT)
                 .event(Event.PREORDER_BOOKING)
+                .action(rent())
                 .and()
                 .withExternal()
                 .source(Status.IN_RENT).target(Status.IN_STOCK)
