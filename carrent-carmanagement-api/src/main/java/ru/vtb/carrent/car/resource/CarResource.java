@@ -1,6 +1,6 @@
 /*
  * VTB Group. Do not reproduce without permission in writing.
- * Copyright (c) 2017 VTB Group. All rights reserved.
+ * Copyright (c) 2018 VTB Group. All rights reserved.
  */
 
 package ru.vtb.carrent.car.resource;
@@ -10,8 +10,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.vtb.carrent.car.dto.CarDto;
-import ru.vtb.carrent.car.filter.FilteredPageRequest;
 
 import java.util.Date;
 
@@ -43,6 +44,7 @@ public interface CarResource {
     @ApiOperation(value = "Create a car")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.createCar')")
     CarDto createCar(
             @ApiParam(value = "Car body", required = true)
             @RequestBody CarDto carDto);
@@ -55,6 +57,7 @@ public interface CarResource {
      */
     @ApiOperation("Get Car by ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.getCar')")
     CarDto getCar(@PathVariable("id") Long id);
 
     /**
@@ -70,6 +73,7 @@ public interface CarResource {
                             ""),
     })
     @GetMapping
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.getCars')")
     Page<CarDto> getCars(String filter, Pageable pageable);
 
     /**
@@ -83,6 +87,7 @@ public interface CarResource {
             value = "Update a car with specific ID",
             notes = "Method provides validation errors")
     @PutMapping("/{id}")
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.updateCar')")
     CarDto updateCar(@ApiParam(value = "Car id", required = true)
                      @PathVariable("id") Long id,
                      @ApiParam(value = "Car body", required = true)
@@ -98,6 +103,7 @@ public interface CarResource {
             value = "Put a car with specific ID in rent."
     )
     @PostMapping("/{id}/in-rent")
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.inRentCar')")
     CarDto inRentCar(@ApiParam(value = "Car id", required = true)
                      @PathVariable("id") Long id,
                      @ApiParam(value = "End Date of rent", required = true)
@@ -114,6 +120,7 @@ public interface CarResource {
             value = "Put a car with specific ID in stock."
     )
     @PostMapping("/{id}/in-stock")
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.inStockCar')")
     CarDto inStockCar(@ApiParam(value = "Car id", required = true)
                       @PathVariable("id") Long id);
 
@@ -127,6 +134,7 @@ public interface CarResource {
             value = "Put a car with specific ID on maintenance."
     )
     @PostMapping("/{id}/on-maintenance")
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.onMaintenance')")
     CarDto onMaintenance(@ApiParam(value = "Car id", required = true)
                          @PathVariable("id") Long id);
 
@@ -140,6 +148,7 @@ public interface CarResource {
             value = "Drop a car with specific ID."
     )
     @PostMapping("/{id}/drop-out")
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.dropOut')")
     CarDto dropOut(@ApiParam(value = "Car id", required = true)
                    @PathVariable("id") Long id);
 
@@ -151,5 +160,6 @@ public interface CarResource {
     @ApiOperation(value = "Delete a Car")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.deleteCar')")
     void deleteCar(@PathVariable("id") Long id);
 }
