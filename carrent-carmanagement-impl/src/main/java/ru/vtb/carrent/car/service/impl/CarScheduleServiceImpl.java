@@ -9,11 +9,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import ru.vtb.carrent.car.config.KafkaConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.event.Event;
+import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.repository.CarRepository;
 import ru.vtb.carrent.car.statemachine.StateMachineSupplier;
 import ru.vtb.carrent.car.status.Status;
+import ru.vtb.carrent.preorder.dto.CarReleasedDto;
+import ru.vtb.carrent.preorder.dto.MessageContainer;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -31,6 +35,31 @@ public class CarScheduleServiceImpl {
 
     private final CarRepository carRepository;
     private final StateMachineSupplier stateMachineSupplier;
+    private final Sender sender;
+
+    /**
+     * Scheduled job which would scan cars and send messages about free cars to preorder service
+     */
+    @Scheduled(cron = "0 * * ? * *")
+    public void checkAndNotify() {
+        log.debug("checkAndNotify job start");
+        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName());
+        log.debug("{} cars in stock found", carsInStock.size());
+        Date now = new Date();
+        for (Car car : carsInStock) {
+            if (car.getDateOfNextStatus() == null || car.getDateOfNextStatus().after(now)) {
+                log.debug("{} car is free, going to notify preorder service", car);
+                MessageContainer<CarReleasedDto> messageContainer = new MessageContainer<>(
+                        new CarReleasedDto(
+                                car.getId(),
+                                car.getLocationId()
+                        )
+                );
+                sender.send(KafkaConfig.TOPIC, messageContainer);
+            }
+        }
+        log.debug("checkAndNotify job end");
+    }
 
     /**
      * Scheduled job which would scan cars and send event for state transition.
@@ -42,7 +71,7 @@ public class CarScheduleServiceImpl {
         log.debug("{} cars in stock found", carsInStock.size());
         Date now = new Date();
         for (Car car : carsInStock) {
-            if (now.after(car.getDateOfNextStatus()) &&
+            if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now) &&
                     Status.IN_RENT.getDisplayName().equalsIgnoreCase(car.getNextStatus())) {
                 log.debug("{} car is going to rent", car);
                 stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.PREORDER_BOOKING);
@@ -83,7 +112,7 @@ public class CarScheduleServiceImpl {
         );
         Date now = new Date();
         for (Car car : carsOnMaintenance) {
-            if (car.getDateOfNextStatus().before(now)) {
+            if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now)) {
                 if (Status.IN_STOCK.getDisplayName().equalsIgnoreCase(car.getNextStatus())) {
                     if (Status.ON_MAINTENANCE.getDisplayName().equalsIgnoreCase(car.getCurrentStatus())) {
                         log.debug("{} car is going to release from maintenance", car);
@@ -107,7 +136,7 @@ public class CarScheduleServiceImpl {
         final List<Car> cars = carRepository.findByNextStatusIgnoreCase(Status.DROP_OUT.getDisplayName());
         Date now = new Date();
         for (Car car : cars) {
-            if (car.getDateOfNextStatus().before(now)) {
+            if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now)) {
                 if (Status.DROP_OUT.getDisplayName().equalsIgnoreCase(car.getNextStatus())) {
                     log.debug("{} car is going to be dropped", car);
                     stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.DROP_CAR);

@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.vtb.carrent.car.config.util.mapper.CarMapperTestConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
+import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.repository.CarRepository;
 import ru.vtb.carrent.car.statemachine.StateMachineSupplier;
 import ru.vtb.carrent.car.status.Status;
@@ -38,12 +39,14 @@ public class CarScheduleServiceImplTest {
 
     private CarRepository carRepository;
     private StateMachineSupplier stateMachineSupplier;
+    private Sender sender;
 
     @BeforeMethod
     public void setUp() {
         carRepository = Mockito.mock(CarRepository.class);
         stateMachineSupplier = Mockito.mock(StateMachineSupplier.class);
-        carMaintenanceService = new CarScheduleServiceImpl(carRepository, stateMachineSupplier);
+        sender = Mockito.mock(Sender.class);
+        carMaintenanceService = new CarScheduleServiceImpl(carRepository, stateMachineSupplier, sender);
     }
 
     @Test

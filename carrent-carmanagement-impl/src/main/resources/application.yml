@@ -7,34 +7,6 @@ spring:
   cloud:
     config:
       enabled: false
-
-methodsWithAuthorizedRoles:
-  "[ru.vtb.carrent.car.resource.CarResource.createCar]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.CarResource.getCar]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.CarResource.getCars]":
-    - "Администратор"
-    - "Менеджер по прокату"
-    - "Менеджер по обслуживанию"
-    - "Руководитель"
-  "[ru.vtb.carrent.car.resource.CarResource.updateCar]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.CarResource.deleteCar]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.CarResource.dropOut]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.CarResource.onMaintenance]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.CarResource.inStockCar]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.CarResource.inRentCar]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.PreferencesResource.getValue]":
-    - "Администратор"
-  "[ru.vtb.carrent.car.resource.PreferencesResource.updatePreferences]":
-    - "Администратор"
-
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -81,6 +53,33 @@ logging:
     ROOT: INFO
     ru.vtb.carrent: DEBUG
     org.springframework: INFO
+
+methodsWithAuthorizedRoles:
+  "[ru.vtb.carrent.car.resource.CarResource.createCar]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.CarResource.getCar]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.CarResource.getCars]":
+    - "Администратор"
+    - "Менеджер по прокату"
+    - "Менеджер по обслуживанию"
+    - "Руководитель"
+  "[ru.vtb.carrent.car.resource.CarResource.updateCar]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.CarResource.deleteCar]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.CarResource.dropOut]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.CarResource.onMaintenance]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.CarResource.inStockCar]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.CarResource.inRentCar]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.PreferencesResource.getValue]":
+    - "Администратор"
+  "[ru.vtb.carrent.car.resource.PreferencesResource.updatePreferences]":
+    - "Администратор"
 
 ---
 spring:
