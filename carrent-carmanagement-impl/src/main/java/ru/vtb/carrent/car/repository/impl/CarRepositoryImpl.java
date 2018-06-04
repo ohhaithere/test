@@ -56,8 +56,8 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 
         List<Predicate> predicates = new LinkedList<>();
         if (CollectionUtils.isNotEmpty(filter)) {
-            Path<String> path;
-            Class<String> javaType;
+            Path path;
+            Class javaType;
             String key, value;
             for (KeyValuePair pair : filter) {
                 key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
@@ -66,9 +66,13 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                     throw new RuntimeException(String.format("Field with name '%s' not found", key));
                 }
                 javaType = path.getModel().getBindableJavaType();
-                value = (String) pair.getValue();
-                if (StringUtils.isNotBlank(value)) {
-                    predicates.add(RepositoryHelper.getEqualCriteria(value.trim(), javaType, criteriaBuilder, path, false));
+                if (pair.getValue() instanceof String) {
+                    value = (String) pair.getValue();
+                    if (StringUtils.isNotBlank(value)) {
+                        predicates.add(RepositoryHelper.getEqualCriteria(value.trim(), javaType, criteriaBuilder, path, false));
+                    }
+                } else if (pair.getValue() instanceof String[]) {
+                    predicates.add(RepositoryHelper.getBetweenCriteria((String[]) pair.getValue(), javaType, criteriaBuilder, path));
                 }
             }
         }

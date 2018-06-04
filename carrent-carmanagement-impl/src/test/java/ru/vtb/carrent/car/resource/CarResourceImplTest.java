@@ -7,7 +7,6 @@ package ru.vtb.carrent.car.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -150,16 +149,20 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
     public void testGetCarsWithFilter() throws Exception {
         when(carService.getByFilter(any(List.class), any(Pageable.class))).thenReturn(new PageImpl<>(Arrays.asList(new Car())));
         List<KeyValuePair> filters = new ArrayList<>(3);
-        filters.add(new KeyValuePair("model", "Lada"));
-        filters.add(new KeyValuePair("locationId", "123"));
+        filters.add(new KeyValuePair("model", "Jeep"));
+        filters.add(new KeyValuePair("nextStatus", "IN_STOCK"));
         String filter = Base64.encodeBase64String(JsonUtils.beanToJson(filters.toArray(new KeyValuePair[filters.size()])).getBytes());
-        MockHttpServletRequestBuilder getRequest = get("/ui/car")
-                .param("page", "1")
-                .param("size", "1")
-                .param("filter", filter)
-                .accept(MediaType.APPLICATION_JSON);
-        String urlList = "/ui/car?page=0&size=1";
-        mockMvc.perform(getRequest).andExpect(status().isOk());
+        mockMvc.perform(get("/ui/car?page=0&size=1&filter=" + filter)).andExpect(status().isOk());
+        verify(carService).getByFilter(any(List.class), any(Pageable.class));
+    }
+
+    @Test
+    public void testGetCarsWithRangeFilter() throws Exception {
+        when(carService.getByFilter(any(List.class), any(Pageable.class))).thenReturn(new PageImpl<>(Arrays.asList(new Car())));
+        List<KeyValuePair> filters = new ArrayList<>(3);
+        filters.add(new KeyValuePair("dateOfManufacture", new String[] {"2017-06-30", "2018-06-30"}));
+        String filter = Base64.encodeBase64String(JsonUtils.beanToJson(filters.toArray(new KeyValuePair[filters.size()])).getBytes());
+        mockMvc.perform(get("/ui/car?page=0&size=1&filter=" + filter)).andExpect(status().isOk());
         verify(carService).getByFilter(any(List.class), any(Pageable.class));
     }
 

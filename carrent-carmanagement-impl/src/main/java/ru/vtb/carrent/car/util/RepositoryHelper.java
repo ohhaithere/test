@@ -11,6 +11,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +23,12 @@ import java.util.List;
  * @author Valiantsin_Charkashy
  */
 public final class RepositoryHelper {
+
+    /**
+     * Formatter for date
+     *
+     */
+    private static final SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
 
     private RepositoryHelper(){}
 
@@ -34,8 +43,8 @@ public final class RepositoryHelper {
      * @param strict          strict flag
      * @return {@link Predicate}
      */
-    public static Predicate getEqualCriteria(String value, Class<String> javaType, CriteriaBuilder criteriaBuilder,
-                                             Path<String> path, boolean strict) {
+    public static Predicate getEqualCriteria(String value, Class javaType, CriteriaBuilder criteriaBuilder,
+                                             Path path, boolean strict) {
         if (javaType.isAssignableFrom(boolean.class) || javaType.isAssignableFrom(Boolean.class)) {
             try {
                 return criteriaBuilder.equal(path, Boolean.valueOf(value));
@@ -73,6 +82,55 @@ public final class RepositoryHelper {
 
         return criteriaBuilder.like(criteriaBuilder.upper(path),
                 strict ? value.toUpperCase() : "%" + value.toUpperCase() + "%");
+    }
+
+    /**
+     * Converts values and creates a "LIKE" request.
+     *
+     * @param arr           range of objects
+     * @param javaType        java type
+     * @param criteriaBuilder criteria builder
+     * @param path            path
+     * @return {@link Predicate}
+     */
+    public static Predicate getBetweenCriteria(String[] arr, Class javaType, CriteriaBuilder criteriaBuilder, Path path) {
+
+        if (javaType.isAssignableFrom(long.class) || javaType.isAssignableFrom(Long.class)) {
+            try {
+                return criteriaBuilder.between(path, Long.valueOf(arr[0]), Long.valueOf(arr[1]));
+            } catch (NumberFormatException e) {
+                // Just true by default
+                return criteriaBuilder.conjunction();
+            }
+        }
+
+        if (javaType.isAssignableFrom(int.class) || javaType.isAssignableFrom(Integer.class)) {
+            try {
+                return criteriaBuilder.between(path, Integer.valueOf(arr[0]), Integer.valueOf(arr[1]));
+            } catch (NumberFormatException e) {
+                // Just true by default
+                return criteriaBuilder.conjunction();
+            }
+        }
+
+        if (javaType.isAssignableFrom(double.class) || javaType.isAssignableFrom(Double.class)) {
+            try {
+                return criteriaBuilder.between(path, Double.valueOf(arr[0]), Double.valueOf(arr[1]));
+            } catch (NumberFormatException e) {
+                // Just true by default
+                return criteriaBuilder.conjunction();
+            }
+        }
+
+        if (javaType.isAssignableFrom(Date.class)) {
+            try {
+                return criteriaBuilder.between(path, sdf.parse(arr[0]), sdf.parse(arr[1]));
+            } catch (ParseException e) {
+                return criteriaBuilder.conjunction();
+            }
+        }
+
+        return criteriaBuilder.between(criteriaBuilder.upper(path), arr[0].toUpperCase(), arr[1].toUpperCase());
     }
 
 }
