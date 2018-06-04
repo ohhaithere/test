@@ -6,6 +6,8 @@
 package ru.vtb.carrent.car.resource;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vtb.carrent.car.service.PreferencesService;
 
@@ -24,7 +26,7 @@ public class PreferencesResourceImpl implements PreferencesResource {
      * {@inheritDoc}
      */
     @Override
-    public String getValue(String name) {
+    public String getValue(@PathVariable("name") String name) {
         return service.find(name);
     }
 
@@ -32,7 +34,7 @@ public class PreferencesResourceImpl implements PreferencesResource {
      * {@inheritDoc}
      */
     @Override
-    public void updatePreferences(String name, String value) {
+    public void updatePreferences(@PathVariable("name") String name, @RequestParam(name = "value") String value) {
         service.update(name, value);
     }
 }

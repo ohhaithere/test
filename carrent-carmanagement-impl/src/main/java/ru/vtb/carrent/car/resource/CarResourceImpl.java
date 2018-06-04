@@ -12,6 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vtb.carrent.car.domain.model.KeyValuePair;
 import ru.vtb.carrent.car.dto.CarDto;
@@ -53,7 +56,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public CarDto createCar(CarDto carDto) {
+    public CarDto createCar(@RequestBody CarDto carDto) {
         return mapper.toDto(service.create(mapper.fromDto(carDto)));
     }
 
@@ -61,7 +64,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public CarDto getCar(Long id) {
+    public CarDto getCar(@PathVariable("id") Long id) {
         return mapper.toDto(service.find(id));
     }
 
@@ -89,19 +92,18 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public CarDto updateCar(Long id, CarDto carDto) {
+    public CarDto updateCar(@PathVariable("id") Long id,
+                            @RequestBody CarDto carDto) {
         return mapper.toDto(service.update(mapper.fromDto(carDto.setId(id))));
     }
 
     /**
      * {@inheritDoc}
-     *
-     * <p>
-     * Due to limitations of Spring 4, we must specify date time format on implementation methods as well.
-     * </p>
      */
     @Override
-    public CarDto inRentCar(Long id, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
+    public CarDto inRentCar(@PathVariable("id") Long id,
+                            @RequestParam("endDate")
+                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)  Date endDate) {
         return mapper.toDto(service.inRent(id, endDate));
     }
 
@@ -109,7 +111,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public CarDto inStockCar(Long id) {
+    public CarDto inStockCar(@PathVariable("id") Long id) {
         return mapper.toDto(service.inStock(id));
     }
 
@@ -117,7 +119,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public CarDto onMaintenance(Long id) {
+    public CarDto onMaintenance(@PathVariable("id") Long id) {
         return mapper.toDto(service.onMaintenance(id));
     }
 
@@ -125,7 +127,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public CarDto dropOut(Long id) {
+    public CarDto dropOut(@PathVariable("id") Long id) {
         return mapper.toDto(service.dropOut(id));
     }
 
@@ -133,7 +135,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    public void deleteCar(Long id) {
+    public void deleteCar(@PathVariable("id") Long id) {
         service.delete(id);
     }
 
