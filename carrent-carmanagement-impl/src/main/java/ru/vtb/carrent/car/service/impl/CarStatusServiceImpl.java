@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.vtb.carrent.car.config.KafkaConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
+import ru.vtb.carrent.car.event.HistoryEvent;
 import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.service.PreferencesService;
@@ -49,7 +50,7 @@ public class CarStatusServiceImpl {
         car.setDateOfNextCheck(Date.from(car.getDateOfLastCheck().toInstant().plus(getServiceIntervalValue())));
         car.setDateOfNextStatus(null);
         car.setNextStatus(null);
-        carService.update(car);
+        carService.update(car, HistoryEvent.STATUS_CHANGED);
     }
 
     public void release(Car car) {
@@ -58,7 +59,7 @@ public class CarStatusServiceImpl {
         car.setDateOfCurrentStatus(new Date());
         car.setDateOfNextStatus(null);
         car.setNextStatus(null);
-        carService.update(car);
+        carService.update(car, HistoryEvent.STATUS_CHANGED);
         //SEND KAFKA MESSAGE FOR PRE ORDER SERVICE
         MessageContainer<CarReleasedDto> messageContainer = new MessageContainer<>(
                 new CarReleasedDto(
@@ -74,7 +75,7 @@ public class CarStatusServiceImpl {
         car.setDateOfCurrentStatus(new Date());
         car.setNextStatus(null);
         car.setDateOfNextStatus(null);
-        carService.update(car);
+        carService.update(car, HistoryEvent.STATUS_CHANGED);
     }
 
     private Duration getServiceIntervalValue() {
@@ -93,6 +94,6 @@ public class CarStatusServiceImpl {
         car.setNextStatus(Status.IN_STOCK.getDisplayName());
         car.setDateOfNextStatus(preorder.getDateTo());
         car.setLocationId(preorder.getCarReturnPoint());
-        carService.update(car);
+        carService.update(car, HistoryEvent.STATUS_CHANGED);
     }
 }

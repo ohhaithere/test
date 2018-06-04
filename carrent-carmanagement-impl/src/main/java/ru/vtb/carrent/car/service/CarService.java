@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.domain.model.KeyValuePair;
+import ru.vtb.carrent.car.event.HistoryEvent;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 
 import java.util.Date;
@@ -64,6 +65,15 @@ public interface CarService {
      * @return updated car
      */
     Car update(Car car);
+
+    /**
+     * Updates Car with custom history event.
+     *
+     * @param car   Car
+     * @param event HistoryEvent
+     * @return updated car
+     */
+    Car update(Car car, HistoryEvent event);
 
     /**
      * Put Car into rent.

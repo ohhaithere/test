@@ -4,6 +4,7 @@ import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import ru.vtb.carrent.car.domain.entity.Car;
+import ru.vtb.carrent.car.event.HistoryEvent;
 import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.preorder.dto.CarBookingRequest;
@@ -31,6 +32,6 @@ public class CarBookingServiceImplTest {
 
         Assert.assertEquals(testCar.getNextStatus(), Status.IN_RENT.getDisplayName());
         Assert.assertEquals(testCar.getCurrentStatus(), Status.IN_STOCK.getDisplayName());
-        verify(carService).update(testCar);
+        verify(carService).update(testCar, HistoryEvent.STATUS_CHANGED);
     }
 }

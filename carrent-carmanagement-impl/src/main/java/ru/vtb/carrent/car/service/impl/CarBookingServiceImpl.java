@@ -7,6 +7,7 @@ package ru.vtb.carrent.car.service.impl;
 
 import org.springframework.stereotype.Component;
 import ru.vtb.carrent.car.domain.entity.Car;
+import ru.vtb.carrent.car.event.HistoryEvent;
 import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.preorder.dto.CarBookingRequest;
@@ -32,6 +33,6 @@ public class CarBookingServiceImpl {
         car.setNextStatus(Status.IN_RENT.getDisplayName());
         car.setDateOfNextStatus(preorderDto.getDateFrom());
         car.setEndDateOfRent(preorderDto.getDateTo());
-        carService.update(car);
+        carService.update(car, HistoryEvent.STATUS_CHANGED);
     }
 }

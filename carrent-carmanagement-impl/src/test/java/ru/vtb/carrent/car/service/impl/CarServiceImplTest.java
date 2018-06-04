@@ -24,7 +24,9 @@ import java.util.Date;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 
@@ -36,6 +38,7 @@ import static org.testng.Assert.assertEquals;
 public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     private CarRepository repository;
+    private CarHistoryServiceImpl historyService;
 
     private CarService service;
     private Long testCarId = 123L;
@@ -44,7 +47,8 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     @BeforeTest
     public void init() {
         repository = Mockito.mock(CarRepository.class);
-        service = new CarServiceImpl(repository);
+        historyService = Mockito.mock(CarHistoryServiceImpl.class);
+        service = new CarServiceImpl(repository, historyService);
     }
 
     @BeforeMethod
