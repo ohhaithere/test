@@ -5,6 +5,7 @@
 
 package ru.vtb.carrent.car.resource;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,7 @@ public interface PreferencesResource {
      * @param name preferences' name
      * @return found preferences
      */
+    @ApiOperation("Get preferences value by name")
     @GetMapping("/{name}")
     String getValue(@PathVariable("name") String name);
 
@@ -34,6 +36,7 @@ public interface PreferencesResource {
      * @param name preferences' name
      * @param value value to store
      */
+    @ApiOperation("Set preferences value by name")
     @PutMapping("/{name}")
     void updatePreferences(@PathVariable("name") String name, @RequestParam(name = "value") String value);
 }

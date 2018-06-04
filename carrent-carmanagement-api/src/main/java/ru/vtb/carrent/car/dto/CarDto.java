@@ -24,39 +24,39 @@ import java.util.Date;
 @Accessors(chain = true)
 public class CarDto {
 
-    @ApiModelProperty(value = "Идентификатор", example = "1")
+    @ApiModelProperty(value = "ID", example = "1")
     private Long id;
 
-    @ApiModelProperty(value = "Марка автомобиля", example = "Lada Vesta")
+    @ApiModelProperty(value = "Car model", example = "Lada Vesta")
     private String model;
 
-    @ApiModelProperty(value = "Государственный номер", example = "с123тт-54")
+    @ApiModelProperty(value = "Car registration number", example = "А777АА777")
     private String regNumber;
 
-    @ApiModelProperty(value = "Год выпуска")
+    @ApiModelProperty(value = "Car year", example = "2017")
     private Date dateOfManufacture;
 
-    @ApiModelProperty(value = "Пробег на последнюю дату в статусе в наличии", example = "11")
+    @ApiModelProperty(value = "Mileage (at the last time car was in stock)", example = "10123")
     private int mileage;
 
-    @ApiModelProperty(value = "Дата последнего ТО")
+    @ApiModelProperty(value = "Last maintenance date", example = "2018-05-29T00:00:00.000+0000")
     private Date dateOfLastCheck;
 
-    @ApiModelProperty(value = "Дата следуюшего ТО")
+    @ApiModelProperty(value = "Next maintenance date", example = "2018-05-29T00:00:00.000+0000")
     private Date dateOfNextCheck;
 
-    @ApiModelProperty(value = "Текуший статус", example = "в наличии")
+    @ApiModelProperty(value = "Current status", example = "В Наличии")
     private String currentStatus;
 
-    @ApiModelProperty(value = "Дата перехода в текущий статус")
+    @ApiModelProperty(value = "Current status last change date", example = "2018-05-29T00:00:00.000+0000")
     private Date dateOfCurrentStatus;
 
-    @ApiModelProperty(value = "Следующий статус", example = "в наличии")
+    @ApiModelProperty(value = "Next status", example = "В Прокате")
     private String nextStatus;
 
-    @ApiModelProperty(value = "Плановая дата следуюшего статуса")
+    @ApiModelProperty(value = "Planned next status change date", example = "2018-05-29T00:00:00.000+0000")
     private Date dateOfNextStatus;
 
-    @ApiModelProperty(value = "ID Локации автомобиля", example = "666")
+    @ApiModelProperty(value = "Car location ID", example = "123")
     private Long locationId;
 }
