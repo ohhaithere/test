@@ -5,6 +5,7 @@
 
 package ru.vtb.carrent.car.service.impl;
 
+import org.springframework.stereotype.Component;
 import ru.vtb.carrent.car.config.KafkaConfig;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.dto.CarDto;
@@ -21,6 +22,7 @@ import ru.vtb.carrent.preorder.dto.MessageContainer;
  *
  * @author Tsimafei_Dynikau
  */
+@Component
 public class CarHistoryServiceImpl {
     private final Sender sender;
     private final CarMapper mapper;
