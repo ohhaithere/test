@@ -36,6 +36,25 @@ public class CarScheduleServiceImpl {
      * Scheduled job which would scan cars and send event for state transition.
      */
     @Scheduled(cron = "0 * * ? * *")
+    public void checkAndRent() {
+        log.debug("checkAndRent job start");
+        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName());
+        log.debug("{} cars in stock found", carsInStock.size());
+        Date now = new Date();
+        for (Car car : carsInStock) {
+            if (now.after(car.getDateOfNextStatus()) &&
+                    Status.IN_RENT.getDisplayName().equalsIgnoreCase(car.getNextStatus())) {
+                log.debug("{} car is going to rent", car);
+                stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.PREORDER_BOOKING);
+            }
+        }
+        log.debug("checkAndRent job end");
+    }
+
+    /**
+     * Scheduled job which would scan cars and send event for state transition.
+     */
+    @Scheduled(cron = "0 * * ? * *")
     public void checkAndPutOnMaintenance() {
         log.debug("checkAndPutOnMaintenance job start");
         final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName());

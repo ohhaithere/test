@@ -47,6 +47,34 @@ public class CarScheduleServiceImplTest {
     }
 
     @Test
+    public void testCheckAndRent() {
+        Mockito.when(
+                carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName())
+        ).thenReturn(
+                Collections.singletonList(
+                        new Car(
+                                1l,
+                                "s500",
+                                "a000aa",
+                                new Date(),
+                                1,
+                                new Date(),
+                                new Date(),
+                                Status.IN_STOCK.getDisplayName(),
+                                new Date(),
+                                Status.IN_STOCK.getDisplayName(),
+                                new Date(),
+                                1L,
+                                null)
+                )
+        );
+        Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
+                .thenReturn(Mockito.mock(StateMachine.class));
+
+        carMaintenanceService.checkAndRent();
+    }
+
+    @Test
     public void testCheckAndPutOnMaintenance() {
         Mockito.when(
                 carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName())
@@ -64,7 +92,8 @@ public class CarScheduleServiceImplTest {
                                 new Date(),
                                 Status.IN_STOCK.getDisplayName(),
                                 new Date(),
-                                1L)
+                                1L,
+                                null)
                 )
         );
         Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
@@ -91,7 +120,8 @@ public class CarScheduleServiceImplTest {
                                 new Date(),
                                 Status.DROP_OUT.getDisplayName(),
                                 new Date(),
-                                1L)
+                                1L,
+                                null)
                 )
         );
         Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
@@ -123,7 +153,8 @@ public class CarScheduleServiceImplTest {
                                 new Date(),
                                 Status.IN_STOCK.getDisplayName(),
                                 Date.from(ZonedDateTime.of(2018, 05, 20, 20, 20, 20, 20, ZoneId.systemDefault()).toInstant()),
-                                1L)
+                                1L,
+                                null)
                 )
         );
         Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
@@ -156,7 +187,8 @@ public class CarScheduleServiceImplTest {
                                 new Date(),
                                 Status.IN_STOCK.getDisplayName(),
                                 Date.from(ZonedDateTime.of(2018, 05, 20, 20, 20, 20, 20, ZoneId.systemDefault()).toInstant()),
-                                1L)
+                                1L,
+                                null)
                 )
         );
         Mockito.when(stateMachineSupplier.getCarStateMachine(any()))

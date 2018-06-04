@@ -5,11 +5,7 @@
 
 package ru.vtb.carrent.car.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -104,4 +100,10 @@ public class Car {
      */
     @Column(name = "location_id")
     private Long locationId;
+
+    /**
+     * Дата окончания аренды ТС
+     */
+    @Column(name = "end_date_of_rent")
+    private Date endDateOfRent;
 }
