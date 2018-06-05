@@ -5,6 +5,7 @@
 
 package ru.vtb.carrent.car.config;
 
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import ru.vtb.carrent.car.Application;
@@ -16,5 +17,6 @@ import ru.vtb.carrent.car.Application;
  */
 @Configuration
 @ComponentScan(basePackageClasses = Application.class)
+@EnableCircuitBreaker
 public class AppConfig {
 }

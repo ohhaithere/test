@@ -7,6 +7,9 @@ spring:
   cloud:
     config:
       enabled: false
+    stream.kafka.binder.zkNodes:
+      - zookeeper-1
+      - zookeeper-2
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -91,6 +94,8 @@ spring:
     kubernetes:
       discovery:
         enabled: false
+    stream.kafka.binder.zkNodes:
+      - localhost
   kafka:
     bootstrap-servers: localhost:9092
   datasource:
