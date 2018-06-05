@@ -6,7 +6,6 @@
 package ru.vtb.carrent.car.resource;
 
 import io.swagger.annotations.ApiOperation;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,17 +28,15 @@ public interface PreferencesResource {
      */
     @ApiOperation("Get preferences value by name")
     @GetMapping("/{name}")
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.PreferencesResource.getValue')")
     String getValue(@PathVariable("name") String name);
 
     /**
      * Updates preferences.
      *
-     * @param name preferences' name
+     * @param name  preferences' name
      * @param value value to store
      */
     @ApiOperation("Set preferences value by name")
     @PutMapping("/{name}")
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.PreferencesResource.updatePreferences')")
     void updatePreferences(@PathVariable("name") String name, @RequestParam(name = "value") String value);
 }

@@ -24,21 +24,11 @@
         <finalName>${project.artifactId}</finalName>
     </build>
 
-    <properties>
-        <carrent-access-control-lib.version>0.0.0-SNAPSHOT</carrent-access-control-lib.version>
-    </properties>
-
     <dependencies>
 
         <dependency>
             <groupId>ru.vtb.dbo</groupId>
             <artifactId>swagger-documentation</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>ru.carrent</groupId>
-            <artifactId>carrent-access-control-lib</artifactId>
-            <version>${carrent-access-control-lib.version}</version>
         </dependency>
 
         <dependency>
