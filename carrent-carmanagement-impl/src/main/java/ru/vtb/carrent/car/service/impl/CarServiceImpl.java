@@ -6,16 +6,19 @@
 package ru.vtb.carrent.car.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.domain.model.KeyValuePair;
+import ru.vtb.carrent.car.event.Event;
 import ru.vtb.carrent.car.event.HistoryEvent;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 import ru.vtb.carrent.car.repository.CarRepository;
 import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.statemachine.StateMachineSupplier;
 import ru.vtb.carrent.car.status.Status;
 
 import java.util.Date;
@@ -30,10 +33,12 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class CarServiceImpl implements CarService {
 
     private final CarRepository repository;
     private final CarHistoryServiceImpl historyService;
+    private final StateMachineSupplier stateMachineSupplier;
 
     /**
      * {@inheritDoc}
@@ -101,7 +106,10 @@ public class CarServiceImpl implements CarService {
         car.setNextStatus(Status.IN_RENT.getDisplayName());
         car.setDateOfNextStatus(new Date());
         car.setEndDateOfRent(endDate);
-        return update(car, HistoryEvent.STATUS_CHANGED);
+        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
+        log.debug("{} car manual going to rent", car);
+        stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.PREORDER_BOOKING);
+        return updatedCar;
     }
 
     /**
@@ -113,7 +121,16 @@ public class CarServiceImpl implements CarService {
         final Car car = find(id);
         car.setNextStatus(Status.IN_STOCK.getDisplayName());
         car.setDateOfNextStatus(new Date());
-        return update(car, HistoryEvent.STATUS_CHANGED);
+        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
+        if (Status.ON_MAINTENANCE.getDisplayName().equalsIgnoreCase(updatedCar.getCurrentStatus())) {
+            log.debug("{} car manual release from maintenance", car);
+            stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.SERVICE_DONE);
+        }
+        if (Status.IN_RENT.getDisplayName().equalsIgnoreCase(updatedCar.getCurrentStatus())) {
+            log.debug("{} car manual release from rent", car);
+            stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.RENT_DONE);
+        }
+        return updatedCar;
     }
 
     /**
@@ -125,7 +142,10 @@ public class CarServiceImpl implements CarService {
         final Car car = find(id);
         car.setNextStatus(Status.ON_MAINTENANCE.getDisplayName());
         car.setDateOfNextStatus(new Date());
-        return update(car, HistoryEvent.STATUS_CHANGED);
+        Car updateCar = update(car, HistoryEvent.STATUS_CHANGED);
+        log.debug("{} car manual release from maintenance", car);
+        stateMachineSupplier.getCarStateMachine(updateCar).sendEvent(Event.GO_TO_SERVICE);
+        return updateCar;
     }
 
     /**
@@ -137,7 +157,10 @@ public class CarServiceImpl implements CarService {
         final Car car = find(id);
         car.setNextStatus(Status.DROP_OUT.getDisplayName());
         car.setDateOfNextStatus(new Date());
-        return update(car, HistoryEvent.STATUS_CHANGED);
+        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
+        log.debug("{} car manual going to be dropped", updatedCar);
+        stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.DROP_CAR);
+        return updatedCar;
     }
 
     /**

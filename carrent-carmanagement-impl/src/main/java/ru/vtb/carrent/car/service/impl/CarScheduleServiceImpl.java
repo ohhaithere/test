@@ -45,9 +45,8 @@ public class CarScheduleServiceImpl {
         log.debug("checkAndNotify job start");
         final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName());
         log.debug("{} cars in stock found", carsInStock.size());
-        Date now = new Date();
         for (Car car : carsInStock) {
-            if (car.getDateOfNextStatus() == null || car.getDateOfNextStatus().after(now)) {
+            if (car.getDateOfNextStatus() == null) {
                 log.debug("{} car is free, going to notify preorder service", car);
                 MessageContainer<CarReleasedDto> messageContainer = new MessageContainer<>(
                         new CarReleasedDto(
