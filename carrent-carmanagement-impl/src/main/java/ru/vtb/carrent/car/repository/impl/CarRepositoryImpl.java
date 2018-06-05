@@ -5,6 +5,7 @@
 
 package ru.vtb.carrent.car.repository.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -29,10 +30,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Repository to search cars by filter
+ * Repository to search cars by filter.
  *
  * @author Valiantsin_Charkashy
  */
+@Slf4j
 public class CarRepositoryImpl implements CarRepositoryCustom {
 
     @PersistenceContext
@@ -58,12 +60,14 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         if (CollectionUtils.isNotEmpty(filter)) {
             Path path;
             Class javaType;
-            String key, value;
+            String key;
+            String value;
             for (KeyValuePair pair : filter) {
                 key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
                 path = root.get(key);
                 if (path == null) {
-                    throw new RuntimeException(String.format("Field with name '%s' not found", key));
+                    log.error(String.format("Field with name '%s' not found", key));
+                    return new PageImpl<>(Collections.emptyList());
                 }
                 javaType = path.getModel().getBindableJavaType();
                 if (pair.getValue() instanceof String) {
