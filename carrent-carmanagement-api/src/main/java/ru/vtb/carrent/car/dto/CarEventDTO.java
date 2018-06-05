@@ -88,6 +88,7 @@ public class CarEventDTO {
 
         this.location = location;
 
+        this.eventDate = new Date();
         this.eventType = event.toString();
         this.eventTypeDisplayName = event.getDisplayName();
     }
