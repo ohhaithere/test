@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.service.CarStatusService;
 import ru.vtb.carrent.car.service.PreferencesService;
 import ru.vtb.carrent.preorder.dto.PreorderDto;
 
@@ -15,7 +16,7 @@ import ru.vtb.carrent.preorder.dto.PreorderDto;
  * @author Nikita_Puzankov
  */
 public class CarStatusServiceImplTest {
-    private CarStatusServiceImpl carStatusServive;
+    private CarStatusService carStatusService;
     private Sender sender;
     private CarService carService;
     private PreferencesService preferenceService;
@@ -25,7 +26,7 @@ public class CarStatusServiceImplTest {
         sender = Mockito.mock(Sender.class);
         carService = Mockito.mock(CarService.class);
         preferenceService = Mockito.mock(PreferencesService.class);
-        carStatusServive = new CarStatusServiceImpl(
+        carStatusService = new CarStatusServiceImpl(
                 sender,
                 carService,
                 preferenceService
@@ -34,27 +35,27 @@ public class CarStatusServiceImplTest {
 
     @Test
     public void testPutOnMaintenance() {
-        carStatusServive.putOnMaintenance(
+        carStatusService.putOnMaintenance(
                 new Car()
         );
     }
 
     @Test
     public void testRelease() {
-        carStatusServive.release(
+        carStatusService.release(
                 new Car()
         );
     }
 
     @Test
     public void testDrop() {
-        carStatusServive.drop(
+        carStatusService.drop(
                 new Car()
         );
     }
 
     @Test
     public void testRent() {
-        carStatusServive.rent(new Car(), new PreorderDto());
+        carStatusService.rent(new Car(), new PreorderDto());
     }
 }

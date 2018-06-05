@@ -12,6 +12,7 @@ import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.event.HistoryEvent;
 import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.service.CarStatusService;
 import ru.vtb.carrent.car.service.PreferencesService;
 import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.preorder.dto.CarReleasedDto;
@@ -28,7 +29,7 @@ import java.util.Date;
  */
 @Slf4j
 @Component
-public class CarStatusServiceImpl {
+public class CarStatusServiceImpl implements CarStatusService {
 
     private static final String SERVICE_INTERVAL_PROPERTY = "service-interval";
     private static final Duration SERVICE_INTERVAL_DEFAULT = Duration.ofMinutes(5);
@@ -42,6 +43,7 @@ public class CarStatusServiceImpl {
         this.preferencesService = preferencesService;
     }
 
+    @Override
     public void putOnMaintenance(Car car) {
         log.debug("Car would be put on maintenance");
         car.setCurrentStatus(Status.ON_MAINTENANCE.getDisplayName());
@@ -53,6 +55,7 @@ public class CarStatusServiceImpl {
         carService.update(car, HistoryEvent.STATUS_CHANGED);
     }
 
+    @Override
     public void release(Car car) {
         log.debug("Car would be released in stock.");
         car.setCurrentStatus(Status.IN_STOCK.getDisplayName());
@@ -70,6 +73,7 @@ public class CarStatusServiceImpl {
         sender.send(KafkaConfig.TOPIC, messageContainer);
     }
 
+    @Override
     public void drop(Car car) {
         car.setCurrentStatus(Status.DROP_OUT.getDisplayName());
         car.setDateOfCurrentStatus(new Date());
@@ -88,6 +92,7 @@ public class CarStatusServiceImpl {
         }
     }
 
+    @Override
     public void rent(Car car, PreorderDto preorder) {
         car.setCurrentStatus(Status.IN_RENT.getDisplayName());
         car.setDateOfCurrentStatus(new Date());

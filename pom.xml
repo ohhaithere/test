@@ -69,7 +69,6 @@
             **/event/**,
             **/service/**,
             **/config/**,
-            **/statemachine/**,
             **/listener/**,
             **/client/**,
         </sonar.exclusions>

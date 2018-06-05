@@ -13,7 +13,7 @@ import org.springframework.statemachine.config.StateMachineBuilder;
 import org.springframework.stereotype.Component;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.event.Event;
-import ru.vtb.carrent.car.service.impl.CarStatusServiceImpl;
+import ru.vtb.carrent.car.service.CarStatusService;
 import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.preorder.dto.PreorderDto;
 
@@ -27,9 +27,9 @@ import java.util.EnumSet;
 @Component
 public class CarStateMachineBuilder {
 
-    private final CarStatusServiceImpl carStatusService;
+    private final CarStatusService carStatusService;
 
-    public CarStateMachineBuilder(CarStatusServiceImpl carStatusService) {
+    public CarStateMachineBuilder(CarStatusService carStatusService) {
         this.carStatusService = carStatusService;
     }
 
@@ -39,7 +39,7 @@ public class CarStateMachineBuilder {
      * @return new state machine
      */
     @SneakyThrows
-    public StateMachine<Status, Event> build() {
+    StateMachine<Status, Event> build() {
         StateMachineBuilder.Builder<Status, Event> builder = StateMachineBuilder.builder();
 
         builder.configureConfiguration()
