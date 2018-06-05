@@ -28,6 +28,7 @@
         <liquibase.user>carmanagement</liquibase.user>
         <liquibase.password>carmanagement</liquibase.password>
         <carrent.preorder.version>0.0.0-SNAPSHOT</carrent.preorder.version>
+        <carrent-access-control-lib.version>0.0.0-SNAPSHOT</carrent-access-control-lib.version>
     </properties>
 
     <build>
@@ -151,6 +152,11 @@
         </dependency>
 
         <!-- Carrent -->
+        <dependency>
+            <groupId>ru.carrent</groupId>
+            <artifactId>carrent-access-control-lib</artifactId>
+            <version>${carrent-access-control-lib.version}</version>
+        </dependency>
         <dependency>
             <groupId>ru.carrent</groupId>
             <artifactId>carrent-carmanagement-api</artifactId>
