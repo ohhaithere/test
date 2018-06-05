@@ -87,17 +87,17 @@ public final class RepositoryHelper {
     /**
      * Converts values and creates a "LIKE" request.
      *
-     * @param arr           range of objects
+     * @param list           range of objects
      * @param javaType        java type
      * @param criteriaBuilder criteria builder
      * @param path            path
      * @return {@link Predicate}
      */
-    public static Predicate getBetweenCriteria(String[] arr, Class javaType, CriteriaBuilder criteriaBuilder, Path path) {
+    public static Predicate getBetweenCriteria(List<String> list, Class javaType, CriteriaBuilder criteriaBuilder, Path path) {
 
         if (javaType.isAssignableFrom(long.class) || javaType.isAssignableFrom(Long.class)) {
             try {
-                return criteriaBuilder.between(path, Long.valueOf(arr[0]), Long.valueOf(arr[1]));
+                return criteriaBuilder.between(path, Long.valueOf(list.get(0)), Long.valueOf(list.get(1)));
             } catch (NumberFormatException e) {
                 // Just true by default
                 return criteriaBuilder.conjunction();
@@ -106,7 +106,7 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(int.class) || javaType.isAssignableFrom(Integer.class)) {
             try {
-                return criteriaBuilder.between(path, Integer.valueOf(arr[0]), Integer.valueOf(arr[1]));
+                return criteriaBuilder.between(path, Integer.valueOf(list.get(0)), Integer.valueOf(list.get(1)));
             } catch (NumberFormatException e) {
                 // Just true by default
                 return criteriaBuilder.conjunction();
@@ -115,7 +115,7 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(double.class) || javaType.isAssignableFrom(Double.class)) {
             try {
-                return criteriaBuilder.between(path, Double.valueOf(arr[0]), Double.valueOf(arr[1]));
+                return criteriaBuilder.between(path, Double.valueOf(list.get(0)), Double.valueOf(list.get(1)));
             } catch (NumberFormatException e) {
                 // Just true by default
                 return criteriaBuilder.conjunction();
@@ -124,13 +124,13 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(Date.class)) {
             try {
-                return criteriaBuilder.between(path, sdf.parse(arr[0]), sdf.parse(arr[1]));
+                return criteriaBuilder.between(path, sdf.parse(list.get(0)), sdf.parse(list.get(1)));
             } catch (ParseException e) {
                 return criteriaBuilder.conjunction();
             }
         }
 
-        return criteriaBuilder.between(criteriaBuilder.upper(path), arr[0].toUpperCase(), arr[1].toUpperCase());
+        return criteriaBuilder.between(criteriaBuilder.upper(path), list.get(0).toUpperCase(), list.get(1).toUpperCase());
     }
 
 }

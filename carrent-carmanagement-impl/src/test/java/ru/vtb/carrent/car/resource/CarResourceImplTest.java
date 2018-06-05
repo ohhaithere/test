@@ -160,7 +160,7 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
     public void testGetCarsWithRangeFilter() throws Exception {
         when(carService.getByFilter(any(List.class), any(Pageable.class))).thenReturn(new PageImpl<>(Arrays.asList(new Car())));
         List<KeyValuePair> filters = new ArrayList<>(3);
-        filters.add(new KeyValuePair("dateOfManufacture", new String[] {"2017-06-30", "2018-06-30"}));
+        filters.add(new KeyValuePair("dateOfManufacture", Arrays.asList("2010-01-01", "2011-01-01")));
         String filter = Base64.encodeBase64String(JsonUtils.beanToJson(filters.toArray(new KeyValuePair[filters.size()])).getBytes());
         mockMvc.perform(get("/ui/car?page=0&size=1&filter=" + filter)).andExpect(status().isOk());
         verify(carService).getByFilter(any(List.class), any(Pageable.class));

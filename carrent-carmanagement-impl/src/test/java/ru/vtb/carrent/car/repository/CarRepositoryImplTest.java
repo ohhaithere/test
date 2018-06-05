@@ -18,6 +18,7 @@ import ru.vtb.carrent.car.domain.model.KeyValuePair;
 import ru.vtb.carrent.car.status.Status;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -80,7 +81,7 @@ public class CarRepositoryImplTest extends AbstractTransactionalTestNGSpringCont
             System.out.println(em.find(Car.class, 3l));
 
             List<KeyValuePair> filters = new ArrayList<>(3);
-            filters.add(new KeyValuePair("dateOfManufacture", new String[]{"2018-06-11", "2018-06-18"}));
+            filters.add(new KeyValuePair("dateOfManufacture", Arrays.asList("2018-06-11T21:00:00.000Z", "2018-06-18T21:00:00.000Z")));
             Page<Car> page = repository.findByFilter(filters, new PageRequest(0, 10));
             page.getContent().forEach(System.out::println);
             Assert.assertNotNull(page);

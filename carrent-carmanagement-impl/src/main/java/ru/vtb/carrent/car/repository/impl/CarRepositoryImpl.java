@@ -75,8 +75,8 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                     if (StringUtils.isNotBlank(value)) {
                         predicates.add(RepositoryHelper.getEqualCriteria(value.trim(), javaType, criteriaBuilder, path, false));
                     }
-                } else if (pair.getValue() instanceof String[]) {
-                    predicates.add(RepositoryHelper.getBetweenCriteria((String[]) pair.getValue(), javaType, criteriaBuilder, path));
+                } else if (pair.getValue() instanceof List) {
+                    predicates.add(RepositoryHelper.getBetweenCriteria((List<String>) pair.getValue(), javaType, criteriaBuilder, path));
                 }
             }
         }
