@@ -5,8 +5,6 @@
 
 package ru.vtb.carrent.car.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -14,7 +12,7 @@ import javax.persistence.criteria.Predicate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -97,7 +95,9 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(long.class) || javaType.isAssignableFrom(Long.class)) {
             try {
-                return criteriaBuilder.between(path, Long.valueOf(list.get(0)), Long.valueOf(list.get(1)));
+                Long first = isUndefined(list.get(0)) ? Long.MIN_VALUE : Long.valueOf(list.get(0));
+                Long second = isUndefined(list.get(1)) ? Long.MAX_VALUE : Long.valueOf(list.get(1));
+                return criteriaBuilder.between(path, first, second);
             } catch (NumberFormatException e) {
                 // Just true by default
                 return criteriaBuilder.conjunction();
@@ -106,7 +106,9 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(int.class) || javaType.isAssignableFrom(Integer.class)) {
             try {
-                return criteriaBuilder.between(path, Integer.valueOf(list.get(0)), Integer.valueOf(list.get(1)));
+                Integer first = isUndefined(list.get(0)) ? Integer.MIN_VALUE : Integer.valueOf(list.get(0));
+                Integer second = isUndefined(list.get(1)) ? Integer.MAX_VALUE : Integer.valueOf(list.get(1));
+                return criteriaBuilder.between(path, first, second);
             } catch (NumberFormatException e) {
                 // Just true by default
                 return criteriaBuilder.conjunction();
@@ -115,7 +117,9 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(double.class) || javaType.isAssignableFrom(Double.class)) {
             try {
-                return criteriaBuilder.between(path, Double.valueOf(list.get(0)), Double.valueOf(list.get(1)));
+                Double first = isUndefined(list.get(0)) ? Double.MIN_VALUE : Double.valueOf(list.get(0));
+                Double second = isUndefined(list.get(1)) ? Double.MAX_VALUE : Double.valueOf(list.get(1));
+                return criteriaBuilder.between(path, first, second);
             } catch (NumberFormatException e) {
                 // Just true by default
                 return criteriaBuilder.conjunction();
@@ -124,13 +128,19 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(Date.class)) {
             try {
-                return criteriaBuilder.between(path, sdf.parse(list.get(0)), sdf.parse(list.get(1)));
+                Date startDate = isUndefined(list.get(0)) ? new GregorianCalendar(1900, 1, 1).getTime() : sdf.parse(list.get(0));
+                Date endDate = isUndefined(list.get(1)) ? new GregorianCalendar(2200, 1, 1).getTime() : sdf.parse(list.get(1));
+                return criteriaBuilder.between(path, startDate, endDate);
             } catch (ParseException e) {
                 return criteriaBuilder.conjunction();
             }
         }
 
         return criteriaBuilder.between(criteriaBuilder.upper(path), list.get(0).toUpperCase(), list.get(1).toUpperCase());
+    }
+
+    private static boolean isUndefined(String s) {
+        return s == null || s.trim().isEmpty() || "undefined".equalsIgnoreCase(s) || "null".equalsIgnoreCase(s);
     }
 
 }

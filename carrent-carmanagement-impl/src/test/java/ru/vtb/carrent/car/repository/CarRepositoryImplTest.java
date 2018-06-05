@@ -92,6 +92,27 @@ public class CarRepositoryImplTest extends AbstractTransactionalTestNGSpringCont
         }
     }
 
+
+    @Test
+    public void testFindByRangeDateWithNull() throws Exception {
+        try {
+
+            System.out.println(em.find(Car.class, 1l));
+            System.out.println(em.find(Car.class, 2l));
+            System.out.println(em.find(Car.class, 3l));
+
+            List<KeyValuePair> filters = new ArrayList<>(3);
+            filters.add(new KeyValuePair("dateOfManufacture", Arrays.asList(null, "2018-06-14T21:00:00.000Z")));
+            Page<Car> page = repository.findByFilter(filters, new PageRequest(0, 10));
+            page.getContent().forEach(System.out::println);
+            Assert.assertNotNull(page);
+            Assert.assertNotNull(page.getContent());
+            Assert.assertEquals(page.getContent().size(), 2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private Car makeCar(long id, Date date, String model, String currentStatus) {
         Car car = new Car();
         car.setDateOfManufacture(date);
