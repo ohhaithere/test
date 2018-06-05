@@ -5,8 +5,9 @@
 
 package ru.vtb.carrent.car.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,13 +33,21 @@ import java.util.List;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor
 @Slf4j
 public class CarServiceImpl implements CarService {
 
     private final CarRepository repository;
     private final CarHistoryServiceImpl historyService;
     private final StateMachineSupplier stateMachineSupplier;
+
+    @Autowired
+    public CarServiceImpl(CarRepository repository,
+                          CarHistoryServiceImpl historyService,
+                          @Lazy StateMachineSupplier stateMachineSupplier) {
+        this.repository = repository;
+        this.historyService = historyService;
+        this.stateMachineSupplier = stateMachineSupplier;
+    }
 
     /**
      * {@inheritDoc}
