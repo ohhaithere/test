@@ -46,7 +46,7 @@ public class CarStatusServiceImpl implements CarStatusService {
     @Override
     public void putOnMaintenance(Car car) {
         log.debug("Car would be put on maintenance");
-        car.setCurrentStatus(Status.ON_MAINTENANCE.getDisplayName());
+        car.setCurrentStatus(Status.ON_MAINTENANCE.name());
         car.setDateOfCurrentStatus(new Date());
         car.setDateOfLastCheck(new Date());
         car.setDateOfNextCheck(Date.from(car.getDateOfLastCheck().toInstant().plus(getServiceIntervalValue())));
@@ -58,7 +58,7 @@ public class CarStatusServiceImpl implements CarStatusService {
     @Override
     public void release(Car car) {
         log.debug("Car would be released in stock.");
-        car.setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        car.setCurrentStatus(Status.IN_STOCK.name());
         car.setDateOfCurrentStatus(new Date());
         car.setDateOfNextStatus(null);
         car.setNextStatus(null);
@@ -76,7 +76,7 @@ public class CarStatusServiceImpl implements CarStatusService {
     @Override
     public void drop(Car car) {
         log.debug("{} should be dropped", car);
-        car.setCurrentStatus(Status.DROP_OUT.getDisplayName());
+        car.setCurrentStatus(Status.DROP_OUT.name());
         car.setDateOfCurrentStatus(new Date());
         car.setNextStatus(null);
         car.setDateOfNextStatus(null);
@@ -95,9 +95,9 @@ public class CarStatusServiceImpl implements CarStatusService {
 
     @Override
     public void rent(Car car, PreorderDto preorder) {
-        car.setCurrentStatus(Status.IN_RENT.getDisplayName());
+        car.setCurrentStatus(Status.IN_RENT.name());
         car.setDateOfCurrentStatus(new Date());
-        car.setNextStatus(Status.IN_STOCK.getDisplayName());
+        car.setNextStatus(Status.IN_STOCK.name());
         car.setDateOfNextStatus(car.getEndDateOfRent());
         car.setLocationId(car.getLocationId());//As was discussed - car would be return to the same place.
         carService.update(car, HistoryEvent.STATUS_CHANGED);

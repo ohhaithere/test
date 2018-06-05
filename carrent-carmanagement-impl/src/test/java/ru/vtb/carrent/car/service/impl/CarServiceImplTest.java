@@ -5,7 +5,19 @@
 
 package ru.vtb.carrent.car.service.impl;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+
+import org.mockito.Answers;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.statemachine.ObjectStateMachine;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -18,16 +30,10 @@ import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.exception.EntityNotFoundException;
 import ru.vtb.carrent.car.repository.CarRepository;
 import ru.vtb.carrent.car.service.CarService;
+import ru.vtb.carrent.car.statemachine.StateMachineSupplier;
+import ru.vtb.carrent.car.status.Status;
 
 import java.util.Date;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 
 /**
@@ -39,6 +45,7 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     private CarRepository repository;
     private CarHistoryServiceImpl historyService;
+    private StateMachineSupplier stateMachineSupplier;
 
     private CarService service;
     private Long testCarId = 123L;
@@ -48,7 +55,10 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     public void init() {
         repository = Mockito.mock(CarRepository.class);
         historyService = Mockito.mock(CarHistoryServiceImpl.class);
-        service = new CarServiceImpl(repository, historyService);
+        stateMachineSupplier = Mockito.mock(StateMachineSupplier.class);
+        service = new CarServiceImpl(repository, historyService, stateMachineSupplier);
+
+        when(stateMachineSupplier.getCarStateMachine(any())).thenReturn(new ObjectStateMachine<>(null, null, null));
     }
 
     @BeforeMethod
@@ -108,6 +118,7 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     public void testInRentCar() {
         when(repository.exists(testCar.getId())).thenReturn(true);
         when(repository.findOne(testCar.getId())).thenReturn(testCar);
+        when(repository.save(testCar)).thenReturn(testCar);
 
         final Date endDate = new Date();
         service.inRent(testCar.getId(), endDate);
@@ -115,8 +126,13 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testInStockCar() {
+        testCar = new Car()
+                .setId(1L)
+                .setCurrentStatus(Status.ON_MAINTENANCE.name());
+
         when(repository.exists(testCar.getId())).thenReturn(true);
         when(repository.findOne(testCar.getId())).thenReturn(testCar);
+        when(repository.save(testCar)).thenReturn(testCar);
 
         service.inStock(testCar.getId());
     }
@@ -125,6 +141,7 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     public void testOnMaintenanceCar() {
         when(repository.exists(testCar.getId())).thenReturn(true);
         when(repository.findOne(testCar.getId())).thenReturn(testCar);
+        when(repository.save(testCar)).thenReturn(testCar);
 
         service.onMaintenance(testCar.getId());
     }
@@ -133,6 +150,7 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
     public void testDropOutCar() {
         when(repository.exists(testCar.getId())).thenReturn(true);
         when(repository.findOne(testCar.getId())).thenReturn(testCar);
+        when(repository.save(testCar)).thenReturn(testCar);
 
         service.dropOut(testCar.getId());
     }

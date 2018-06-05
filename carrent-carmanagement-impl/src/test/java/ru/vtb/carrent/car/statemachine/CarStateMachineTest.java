@@ -33,7 +33,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testGoToService() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.GO_TO_SERVICE);
@@ -43,7 +43,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testGoToServiceFromIncorrectStatus() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_RENT.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_RENT.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.GO_TO_SERVICE);
@@ -53,7 +53,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testPreorderBooking() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.PREORDER_BOOKING);
@@ -63,7 +63,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testPreorderBookingFromIncorrectStatus() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_RENT.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_RENT.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.PREORDER_BOOKING);
@@ -73,7 +73,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testRentDone() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_RENT.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_RENT.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.RENT_DONE);
@@ -83,7 +83,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testRentDoneFromIncorrectStatus() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.RENT_DONE);
@@ -93,7 +93,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testServiceDone() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.ON_MAINTENANCE.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.ON_MAINTENANCE.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.SERVICE_DONE);
@@ -103,7 +103,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testServiceDoneFromIncorrectStatus() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.SERVICE_DONE);
@@ -113,7 +113,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testDropCar() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.ON_MAINTENANCE.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.ON_MAINTENANCE.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.DROP_CAR);
@@ -123,7 +123,7 @@ public class CarStateMachineTest {
 
     @Test
     public void testDropCarFromIncorrectStatus() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.name());
         StateMachine<Status, Event> stateMachine = stateMachineSupplier.getCarStateMachine(testCar);
 
         stateMachine.sendEvent(Event.DROP_CAR);

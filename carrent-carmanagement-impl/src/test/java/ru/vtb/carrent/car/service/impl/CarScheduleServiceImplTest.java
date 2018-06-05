@@ -52,7 +52,7 @@ public class CarScheduleServiceImplTest {
     @Test
     public void testCheckAndRent() {
         Mockito.when(
-                carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName())
+                carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name())
         ).thenReturn(
                 Collections.singletonList(
                         new Car(
@@ -63,9 +63,9 @@ public class CarScheduleServiceImplTest {
                                 1,
                                 new Date(),
                                 new Date(),
-                                Status.IN_STOCK.getDisplayName(),
+                                Status.IN_STOCK.name(),
                                 new Date(),
-                                Status.IN_STOCK.getDisplayName(),
+                                Status.IN_STOCK.name(),
                                 new Date(),
                                 1L,
                                 null)
@@ -80,7 +80,7 @@ public class CarScheduleServiceImplTest {
     @Test
     public void testCheckAndPutOnMaintenance() {
         Mockito.when(
-                carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName())
+                carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name())
         ).thenReturn(
                 Collections.singletonList(
                         new Car(
@@ -91,9 +91,9 @@ public class CarScheduleServiceImplTest {
                                 1,
                                 new Date(),
                                 new Date(),
-                                Status.IN_STOCK.getDisplayName(),
+                                Status.IN_STOCK.name(),
                                 new Date(),
-                                Status.IN_STOCK.getDisplayName(),
+                                Status.IN_STOCK.name(),
                                 new Date(),
                                 1L,
                                 null)
@@ -108,7 +108,7 @@ public class CarScheduleServiceImplTest {
     @Test
     public void testCheckAndDrop() {
         Mockito.when(
-                carRepository.findByNextStatusIgnoreCase(Status.DROP_OUT.getDisplayName())
+                carRepository.findByNextStatusIgnoreCase(Status.DROP_OUT.name())
         ).thenReturn(
                 Collections.singletonList(
                         new Car(
@@ -119,9 +119,9 @@ public class CarScheduleServiceImplTest {
                                 1,
                                 new Date(),
                                 new Date(),
-                                Status.ON_MAINTENANCE.getDisplayName(),
+                                Status.ON_MAINTENANCE.name(),
                                 new Date(),
-                                Status.DROP_OUT.getDisplayName(),
+                                Status.DROP_OUT.name(),
                                 new Date(),
                                 1L,
                                 null)
@@ -138,8 +138,8 @@ public class CarScheduleServiceImplTest {
         Mockito.when(
                 carRepository.findByCurrentStatusInIgnoreCase(
                         Arrays.asList(
-                                Status.ON_MAINTENANCE.getDisplayName(),
-                                Status.IN_RENT.getDisplayName()
+                                Status.ON_MAINTENANCE.name(),
+                                Status.IN_RENT.name()
                         )
                 )
         ).thenReturn(
@@ -152,9 +152,9 @@ public class CarScheduleServiceImplTest {
                                 1,
                                 new Date(),
                                 new Date(),
-                                Status.IN_RENT.getDisplayName(),
+                                Status.IN_RENT.name(),
                                 new Date(),
-                                Status.IN_STOCK.getDisplayName(),
+                                Status.IN_STOCK.name(),
                                 Date.from(ZonedDateTime.of(2018, 05, 20, 20, 20, 20, 20, ZoneId.systemDefault()).toInstant()),
                                 1L,
                                 null)
@@ -172,8 +172,8 @@ public class CarScheduleServiceImplTest {
         Mockito.when(
                 carRepository.findByCurrentStatusInIgnoreCase(
                         Arrays.asList(
-                                Status.ON_MAINTENANCE.getDisplayName(),
-                                Status.IN_RENT.getDisplayName()
+                                Status.ON_MAINTENANCE.name(),
+                                Status.IN_RENT.name()
                         )
                 )
         ).thenReturn(
@@ -186,9 +186,9 @@ public class CarScheduleServiceImplTest {
                                 1,
                                 new Date(),
                                 new Date(),
-                                Status.ON_MAINTENANCE.getDisplayName(),
+                                Status.ON_MAINTENANCE.name(),
                                 new Date(),
-                                Status.IN_STOCK.getDisplayName(),
+                                Status.IN_STOCK.name(),
                                 Date.from(ZonedDateTime.of(2018, 05, 20, 20, 20, 20, 20, ZoneId.systemDefault()).toInstant()),
                                 1L,
                                 null)

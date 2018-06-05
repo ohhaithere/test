@@ -43,7 +43,7 @@ public class CarScheduleServiceImpl {
     @Scheduled(cron = "0 * * ? * *")
     public void checkAndNotify() {
         log.debug("checkAndNotify job start");
-        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName());
+        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name());
         log.debug("{} cars in stock found", carsInStock.size());
         for (Car car : carsInStock) {
             if (car.getDateOfNextStatus() == null) {
@@ -66,12 +66,12 @@ public class CarScheduleServiceImpl {
     @Scheduled(cron = "0 * * ? * *")
     public void checkAndRent() {
         log.debug("checkAndRent job start");
-        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName());
+        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name());
         log.debug("{} cars in stock found", carsInStock.size());
         Date now = new Date();
         for (Car car : carsInStock) {
             if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now) &&
-                    Status.IN_RENT.getDisplayName().equalsIgnoreCase(car.getNextStatus())) {
+                    Status.IN_RENT.name().equalsIgnoreCase(car.getNextStatus())) {
                 log.debug("{} car is going to rent", car);
                 stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.PREORDER_BOOKING);
             }
@@ -85,7 +85,7 @@ public class CarScheduleServiceImpl {
     @Scheduled(cron = "0 * * ? * *")
     public void checkAndPutOnMaintenance() {
         log.debug("checkAndPutOnMaintenance job start");
-        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.getDisplayName());
+        final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name());
         log.debug("{} cars in stock found", carsInStock.size());
         Date now = new Date();
         for (Car car : carsInStock) {
@@ -105,19 +105,19 @@ public class CarScheduleServiceImpl {
         log.debug("checkAndRelease job start");
         final List<Car> carsOnMaintenance = carRepository.findByCurrentStatusInIgnoreCase(
                 Arrays.asList(
-                        Status.ON_MAINTENANCE.getDisplayName(),
-                        Status.IN_RENT.getDisplayName()
+                        Status.ON_MAINTENANCE.name(),
+                        Status.IN_RENT.name()
                 )
         );
         Date now = new Date();
         for (Car car : carsOnMaintenance) {
             if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now)) {
-                if (Status.IN_STOCK.getDisplayName().equalsIgnoreCase(car.getNextStatus())) {
-                    if (Status.ON_MAINTENANCE.getDisplayName().equalsIgnoreCase(car.getCurrentStatus())) {
+                if (Status.IN_STOCK.name().equalsIgnoreCase(car.getNextStatus())) {
+                    if (Status.ON_MAINTENANCE.name().equalsIgnoreCase(car.getCurrentStatus())) {
                         log.debug("{} car is going to release from maintenance", car);
                         stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.SERVICE_DONE);
                     }
-                    if (Status.IN_RENT.getDisplayName().equalsIgnoreCase(car.getCurrentStatus())) {
+                    if (Status.IN_RENT.name().equalsIgnoreCase(car.getCurrentStatus())) {
                         log.debug("{} car is going to release from rent", car);
                         stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.RENT_DONE);
                     }
@@ -132,7 +132,7 @@ public class CarScheduleServiceImpl {
      */
     @Scheduled(cron = "0 * * ? * *")
     public void checkAndDrop() {
-        final List<Car> cars = carRepository.findByNextStatusIgnoreCase(Status.DROP_OUT.getDisplayName());
+        final List<Car> cars = carRepository.findByNextStatusIgnoreCase(Status.DROP_OUT.name());
         log.debug("{} cars were found to be dropped out in future", cars.size());
         Date now = new Date();
         for (Car car : cars) {

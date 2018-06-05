@@ -22,7 +22,7 @@ public class CarBookingServiceImplTest {
 
     @Test
     public void testCarBookingRequestHandler() {
-        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.getDisplayName());
+        Car testCar = new Car().setId(1L).setCurrentStatus(Status.IN_STOCK.name());
         CarService carService = Mockito.mock(CarService.class);
         when(carService.find(testCar.getId())).thenReturn(testCar);
         CarBookingRequest bookingRequest = new CarBookingRequest(testCar.getId(), new PreorderDto());
@@ -30,8 +30,8 @@ public class CarBookingServiceImplTest {
         CarBookingServiceImpl carBookingService = new CarBookingServiceImpl(carService);
         carBookingService.carBookingRequestHandler(bookingRequest);
 
-        Assert.assertEquals(testCar.getNextStatus(), Status.IN_RENT.getDisplayName());
-        Assert.assertEquals(testCar.getCurrentStatus(), Status.IN_STOCK.getDisplayName());
+        Assert.assertEquals(testCar.getNextStatus(), Status.IN_RENT.name());
+        Assert.assertEquals(testCar.getCurrentStatus(), Status.IN_STOCK.name());
         verify(carService).update(testCar, HistoryEvent.STATUS_CHANGED);
     }
 }

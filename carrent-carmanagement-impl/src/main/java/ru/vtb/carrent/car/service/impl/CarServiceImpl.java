@@ -103,7 +103,7 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public Car inRent(Long id, Date endDate) {
         final Car car = find(id);
-        car.setNextStatus(Status.IN_RENT.getDisplayName());
+        car.setNextStatus(Status.IN_RENT.name());
         car.setDateOfNextStatus(new Date());
         car.setEndDateOfRent(endDate);
         Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
@@ -119,14 +119,14 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public Car inStock(Long id) {
         final Car car = find(id);
-        car.setNextStatus(Status.IN_STOCK.getDisplayName());
+        car.setNextStatus(Status.IN_STOCK.name());
         car.setDateOfNextStatus(new Date());
         Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
-        if (Status.ON_MAINTENANCE.getDisplayName().equalsIgnoreCase(updatedCar.getCurrentStatus())) {
+        if (Status.ON_MAINTENANCE.name().equalsIgnoreCase(updatedCar.getCurrentStatus())) {
             log.debug("{} car manual release from maintenance", car);
             stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.SERVICE_DONE);
         }
-        if (Status.IN_RENT.getDisplayName().equalsIgnoreCase(updatedCar.getCurrentStatus())) {
+        if (Status.IN_RENT.name().equalsIgnoreCase(updatedCar.getCurrentStatus())) {
             log.debug("{} car manual release from rent", car);
             stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.RENT_DONE);
         }
@@ -140,7 +140,7 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public Car onMaintenance(Long id) {
         final Car car = find(id);
-        car.setNextStatus(Status.ON_MAINTENANCE.getDisplayName());
+        car.setNextStatus(Status.ON_MAINTENANCE.name());
         car.setDateOfNextStatus(new Date());
         Car updateCar = update(car, HistoryEvent.STATUS_CHANGED);
         log.debug("{} car manual release from maintenance", car);
@@ -155,7 +155,7 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public Car dropOut(Long id) {
         final Car car = find(id);
-        car.setNextStatus(Status.DROP_OUT.getDisplayName());
+        car.setNextStatus(Status.DROP_OUT.name());
         car.setDateOfNextStatus(new Date());
         Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
         log.debug("{} car manual going to be dropped", updatedCar);

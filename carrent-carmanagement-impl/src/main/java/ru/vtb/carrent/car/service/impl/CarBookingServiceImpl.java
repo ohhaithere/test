@@ -30,7 +30,7 @@ public class CarBookingServiceImpl {
     public void carBookingRequestHandler(CarBookingRequest bookingRequest) {
         Car car = carService.find(bookingRequest.getCarId());
         PreorderDto preorderDto = bookingRequest.getPreorderDto();
-        car.setNextStatus(Status.IN_RENT.getDisplayName());
+        car.setNextStatus(Status.IN_RENT.name());
         car.setDateOfNextStatus(preorderDto.getDateFrom());
         car.setEndDateOfRent(preorderDto.getDateTo());
         carService.update(car, HistoryEvent.STATUS_CHANGED);
