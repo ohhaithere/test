@@ -40,8 +40,10 @@ public class CarServiceImpl implements CarService {
      */
     @Override
     public Car create(Car car) {
-        historyService.notify(car, HistoryEvent.CREATE);
-        return repository.save(car);
+        car.setId(null);
+        Car carSaved = repository.save(car);
+        historyService.notify(carSaved, HistoryEvent.CREATE);
+        return carSaved;
     }
 
     /**
@@ -72,12 +74,21 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Car update(Car car, HistoryEvent event) {
-        Long carId = car.getId();
-        if (!repository.exists(carId)) {
-            throw new EntityNotFoundException(String.format("Car with id %s not found", carId));
-        }
+        Car savedCar = find(car.getId());
+
+        updateNotChangeableFields(car, savedCar);
+
+        Car updatedCar = repository.save(car);
         historyService.notify(car, event);
-        return repository.save(car);
+        return updatedCar;
+    }
+
+    private void updateNotChangeableFields(Car incomingCar, Car savedCar) {
+        incomingCar.setCurrentStatus(savedCar.getCurrentStatus());
+        incomingCar.setDateOfCurrentStatus(savedCar.getDateOfCurrentStatus());
+        incomingCar.setNextStatus(savedCar.getNextStatus());
+        incomingCar.setDateOfNextCheck(savedCar.getDateOfNextCheck());
+        incomingCar.setEndDateOfRent(savedCar.getEndDateOfRent());
     }
 
     /**

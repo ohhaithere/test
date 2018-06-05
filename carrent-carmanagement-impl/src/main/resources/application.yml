@@ -3,6 +3,35 @@ app.api.version: ${version}, build:${build.number}
 server:
   port: 8080
 
+carrentacl:
+  enabled: true
+  methodsWithAuthorizedRoles:
+    "[ru.vtb.carrent.car.resource.CarResource.createCar]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.CarResource.getCar]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.CarResource.getCars]":
+      - "Администратор"
+      - "Менеджер по прокату"
+      - "Менеджер по обслуживанию"
+      - "Руководитель"
+    "[ru.vtb.carrent.car.resource.CarResource.updateCar]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.CarResource.deleteCar]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.CarResource.dropOut]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.CarResource.onMaintenance]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.CarResource.inStockCar]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.CarResource.inRentCar]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.PreferencesResource.getValue]":
+      - "Администратор"
+    "[ru.vtb.carrent.car.resource.PreferencesResource.updatePreferences]":
+      - "Администратор"
+
 spring:
   cloud:
     config:
@@ -52,8 +81,8 @@ multipart:
   maxRequestSize: 2048KB
 
 feign:
-    hystrix:
-        enabled: true
+  hystrix:
+    enabled: true
 
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
 
@@ -62,35 +91,6 @@ logging:
     ROOT: INFO
     ru.vtb.carrent: DEBUG
     org.springframework: INFO
-
-carrentacl:
-  enabled: true
-  methodsWithAuthorizedRoles:
-    "[ru.vtb.carrent.car.resource.CarResource.createCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.getCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.getCars]":
-      - "Администратор"
-      - "Менеджер по прокату"
-      - "Менеджер по обслуживанию"
-      - "Руководитель"
-    "[ru.vtb.carrent.car.resource.CarResource.updateCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.deleteCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.dropOut]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.onMaintenance]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.inStockCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.inRentCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.PreferencesResource.getValue]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.PreferencesResource.updatePreferences]":
-      - "Администратор"
 
 ---
 spring:
