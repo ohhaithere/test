@@ -88,13 +88,13 @@ public class CarServiceImplTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testUpdate() {
-        when(repository.exists(testCar.getId())).thenReturn(true);
+        when(repository.findOne(testCar.getId())).thenReturn(testCar);
         when(repository.save(any(Car.class))).thenReturn(testCar);
 
         service.update(testCar);
 
         verify(repository).save(eq(testCar));
-        verify(repository).exists(anyLong());
+        verify(repository).findOne(anyLong());
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)
