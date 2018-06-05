@@ -15,9 +15,10 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
   kafka:
     enabled: true
-    value-deserializer: ru.vtb.carrent.car.config.CarBookingRequestDeserializer
     bootstrap-servers: kafka-service:9092
-    consumer.group-id: carrent
+    consumer:
+      group-id: carrent
+      value-deserializer: ru.vtb.carrent.car.config.CarBookingRequestDeserializer
   datasource:
       driverClassName: org.postgresql.Driver
       url: jdbc:postgresql://postgresql:5432/db?currentSchema=carmanagement
@@ -49,6 +50,10 @@ eureka:
 multipart:
   maxFileSize: 2048KB
   maxRequestSize: 2048KB
+
+feign:
+    hystrix:
+        enabled: true
 
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
 

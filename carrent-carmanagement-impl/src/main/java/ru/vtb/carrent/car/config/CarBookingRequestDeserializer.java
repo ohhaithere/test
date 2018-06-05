@@ -30,9 +30,10 @@ public class CarBookingRequestDeserializer implements Deserializer<CarBookingReq
     }
 
     @Override
-    public CarBookingRequest deserialize(String data, byte[] bytes) {
+    public CarBookingRequest deserialize(String topic, byte[] data) {
         try {
-            final MessageContainer<CarBookingRequest> container = mapper.readValue(data, new TypeReference<MessageContainer<CarBookingRequest>>() {
+            final MessageContainer<CarBookingRequest> container = mapper.readValue(data,
+                    new TypeReference<MessageContainer<CarBookingRequest>>() {
             });
             return container.getMessage();
         } catch (Exception e) {

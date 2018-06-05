@@ -75,6 +75,7 @@ public class CarStatusServiceImpl implements CarStatusService {
 
     @Override
     public void drop(Car car) {
+        log.debug("{} should be dropped", car);
         car.setCurrentStatus(Status.DROP_OUT.getDisplayName());
         car.setDateOfCurrentStatus(new Date());
         car.setNextStatus(null);
@@ -97,8 +98,8 @@ public class CarStatusServiceImpl implements CarStatusService {
         car.setCurrentStatus(Status.IN_RENT.getDisplayName());
         car.setDateOfCurrentStatus(new Date());
         car.setNextStatus(Status.IN_STOCK.getDisplayName());
-        car.setDateOfNextStatus(preorder.getDateTo());
-        car.setLocationId(preorder.getCarReturnPoint());
+        car.setDateOfNextStatus(car.getEndDateOfRent());
+        car.setLocationId(car.getLocationId());//As was discussed - car would be return to the same place.
         carService.update(car, HistoryEvent.STATUS_CHANGED);
     }
 }
