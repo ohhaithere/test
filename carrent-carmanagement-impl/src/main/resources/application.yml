@@ -12,6 +12,7 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
   kafka:
     enabled: true
+    value-deserializer: ru.vtb.carrent.car.config.CarBookingRequestDeserializer
     bootstrap-servers: kafka-service:9092
     consumer.group-id: carrent
   datasource:
