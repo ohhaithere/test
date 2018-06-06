@@ -168,8 +168,7 @@ public class CarResourceImpl implements CarResource {
         );
         Boolean locationConstraintEnabled = Boolean.FALSE;
         for (String role : rolesWithLocationConstraint) {
-            locationConstraintEnabled = locationConstraintEnabled ? locationConstraintEnabled :
-                    currentUserRoles.contains(role);
+            locationConstraintEnabled = locationConstraintEnabled || currentUserRoles.contains(role);
         }
         log.debug("Location constraint enabled {}", locationConstraintEnabled);
         if (locationConstraintEnabled) {
