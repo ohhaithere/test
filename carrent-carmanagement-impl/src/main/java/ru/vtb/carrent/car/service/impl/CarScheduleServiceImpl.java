@@ -127,19 +127,4 @@ public class CarScheduleServiceImpl {
         }
     }
 
-    /**
-     * Scheduled job which would scan cars and send event for state transition.
-     */
-    @Scheduled(cron = "0 * * ? * *")
-    public void checkAndDrop() {
-        final List<Car> cars = carRepository.findByNextStatusIgnoreCase(Status.DROP_OUT.name());
-        log.debug("{} cars were found to be dropped out in future", cars.size());
-        Date now = new Date();
-        for (Car car : cars) {
-            if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now)) {
-                log.debug("{} car is going to be dropped", car);
-                stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.DROP_CAR);
-            }
-        }
-    }
 }
