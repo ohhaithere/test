@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,8 +49,6 @@ public class CarResourceImpl implements CarResource {
     private final CarService service;
     private final CarMapper mapper;
     private String admin = "Администратор";
-    private String sysAdmin = "Системный администратор";
-    private String client = "Клиент";
     private String managerPo = "Менеджер по обслуживанию";
     private String managerPp = "Менеджер по прокату";
     private String ceo = "Руководство";
@@ -86,12 +83,9 @@ public class CarResourceImpl implements CarResource {
         return mapper.toDto(service.find(id));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+
     @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCars')")
-    public Page<CarDto> getCars(String filter, Pageable pageable) {
+    public Page<CarDto> getCarsOld(String filter, Pageable pageable) {
         List<KeyValuePair> filterList = null;
         if (!StringUtils.isEmpty(filter)) {
             try {
@@ -110,21 +104,13 @@ public class CarResourceImpl implements CarResource {
     /**
      * {@inheritDoc}
      */
-    @GetMapping(params = "list")
-    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCarsForRole')")
-    public Page<CarDto> getCarsForRole(String filter, Pageable pageable, @RequestParam("list") String list) {
+    @Override
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCars')")
+    public Page<CarDto> getCars(String filter, Pageable pageable) {
         final Map<String, List<Status>> availableStatusesForRoles = new HashMap<>();
         availableStatusesForRoles.put(
                 admin,
                 Arrays.asList(Status.values())
-        );
-        availableStatusesForRoles.put(
-                sysAdmin,
-                Collections.EMPTY_LIST
-        );
-        availableStatusesForRoles.put(
-                client,
-                Collections.EMPTY_LIST
         );
         availableStatusesForRoles.put(
                 managerPo,
@@ -132,16 +118,23 @@ public class CarResourceImpl implements CarResource {
         );
         availableStatusesForRoles.put(
                 managerPp,
-                Arrays.asList(Status.values())
+                Arrays.asList(Status.IN_STOCK, Status.IN_RENT)
         );
         availableStatusesForRoles.put(
                 ceo,
                 Arrays.asList(Status.values())
         );
         List<String> rolesWithLocationConstraint = Collections.singletonList(managerPp);
-        final UserInfo userInfo = JwtUtils.getUserInfo();
-        final List<String> currentUserRoles = userInfo.getRoles();
-        final Long userLocationId = userInfo.getLocationId();
+        UserInfo userInfo;
+        List<String> currentUserRoles = Collections.singletonList(admin);
+        Long userLocationId = 0L;
+        try {
+            userInfo = JwtUtils.getUserInfo();
+            currentUserRoles = userInfo.getRoles();
+            userLocationId = userInfo.getLocationId();
+        } catch (Exception e) {
+            log.error("Problems with jwt info taking", e);
+        }
         log.debug("{}", currentUserRoles);
         List<KeyValuePair> filterList = new LinkedList<>();
         if (!StringUtils.isEmpty(filter)) {

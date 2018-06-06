@@ -92,11 +92,11 @@ public class CarResourceImplTest extends AbstractTestNGSpringContextTests {
                 .param("page", "1")
                 .param("size", "1")
                 .accept(MediaType.APPLICATION_JSON);
-        when(carService.findPaginated(any(Pageable.class))).thenReturn(new PageImpl<>(Arrays.asList(new Car())));
+        when(carService.getByFilter(anyList(),any(Pageable.class))).thenReturn(new PageImpl<>(Arrays.asList(new Car())));
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", Matchers.hasSize(1)));
-        verify(carService).findPaginated(any(Pageable.class));
+        verify(carService).getByFilter(anyList(),any(Pageable.class));
     }
 
     @Test
