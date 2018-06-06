@@ -51,7 +51,7 @@ public class CarResourceImpl implements CarResource {
     private String admin = "Администратор";
     private String managerPo = "Менеджер по обслуживанию";
     private String managerPp = "Менеджер по прокату";
-    private String ceo = "Руководство";
+    private String ceo = "Руководитель";
 
     /**
      * Car controller constructor.
@@ -175,7 +175,7 @@ public class CarResourceImpl implements CarResource {
             filterList.add(
                     new KeyValuePair(
                             "locationId",
-                            userLocationId
+                            userLocationId.toString()
                     )
             );
         }
