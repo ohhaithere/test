@@ -8,9 +8,9 @@ package ru.vtb.carrent.car.util;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -67,6 +67,11 @@ public final class RepositoryHelper {
                 // Just true by default
                 return criteriaBuilder.conjunction();
             }
+        }
+
+        if (value.contains(",")) {
+            List<String> multipleStringValue = Arrays.asList(value.split(","));
+            return path.in(multipleStringValue);
         }
 
         return criteriaBuilder.like(criteriaBuilder.upper(path),
