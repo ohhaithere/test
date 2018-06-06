@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -52,11 +53,6 @@ public class CarRepositoryImplTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testFindByFilter() throws Exception {
         try {
-
-            System.out.println(em.find(Car.class, 1l));
-            System.out.println(em.find(Car.class, 2l));
-            System.out.println(em.find(Car.class, 3l));
-
             List<KeyValuePair> filters = new ArrayList<>(3);
             filters.add(new KeyValuePair("model", "audi"));
 
@@ -75,14 +71,9 @@ public class CarRepositoryImplTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testFindByRangeDateFilter() throws Exception {
         try {
-
-            System.out.println(em.find(Car.class, 1l));
-            System.out.println(em.find(Car.class, 2l));
-            System.out.println(em.find(Car.class, 3l));
-
             List<KeyValuePair> filters = new ArrayList<>(3);
             filters.add(new KeyValuePair("dateOfManufacture", Arrays.asList("2018-06-11T21:00:00.000Z", "2018-06-18T21:00:00.000Z")));
-            Page<Car> page = repository.findByFilter(filters, new PageRequest(0, 10));
+            Page<Car> page = repository.findByFilter(filters, new PageRequest(0, 10, Sort.Direction.ASC, "dateOfManufacture"));
             page.getContent().forEach(System.out::println);
             Assert.assertNotNull(page);
             Assert.assertNotNull(page.getContent());
@@ -92,6 +83,63 @@ public class CarRepositoryImplTest extends AbstractTransactionalTestNGSpringCont
         }
     }
 
+    @Test
+    public void testEmptyKey() throws Exception {
+        try {
+            List<KeyValuePair> filters = new ArrayList<>(3);
+            filters.add(new KeyValuePair(null, Arrays.asList("2018-06-11T21:00:00.000Z", "2018-06-18T21:00:00.000Z")));
+            Page<Car> page = repository.findByFilter(filters, new PageRequest(0, 10, Sort.Direction.ASC, "dateOfManufacture"));
+            page.getContent().forEach(System.out::println);
+            Assert.assertNotNull(page);
+            Assert.assertNotNull(page.getContent());
+            Assert.assertEquals(page.getContent().size(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testInvalidNamedKey() throws Exception {
+        try {
+            List<KeyValuePair> filters = new ArrayList<>(3);
+            filters.add(new KeyValuePair("tratata", Arrays.asList("2018-06-11T21:00:00.000Z", "2018-06-18T21:00:00.000Z")));
+            Page<Car> page = repository.findByFilter(filters, new PageRequest(0, 10, Sort.Direction.ASC, "dateOfManufacture"));
+            page.getContent().forEach(System.out::println);
+            Assert.assertNotNull(page);
+            Assert.assertNotNull(page.getContent());
+            Assert.assertEquals(page.getContent().size(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testUnsupportedValueType() throws Exception {
+        try {
+            List<KeyValuePair> filters = new ArrayList<>(3);
+            filters.add(new KeyValuePair("dateOfManufacture", new String[]{"2018-06-11T21:00:00.000Z", "2018-06-18T21:00:00.000Z"}));
+            Page<Car> page = repository.findByFilter(filters, new PageRequest(0, 10, Sort.Direction.ASC, "dateOfManufacture"));
+            page.getContent().forEach(System.out::println);
+            Assert.assertNotNull(page);
+            Assert.assertNotNull(page.getContent());
+            Assert.assertEquals(page.getContent().size(), 3);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testWithNullFilter() throws Exception {
+        try {
+            Page<Car> page = repository.findByFilter(null, new PageRequest(0, 10, Sort.Direction.ASC, "dateOfManufacture"));
+            page.getContent().forEach(System.out::println);
+            Assert.assertNotNull(page);
+            Assert.assertNotNull(page.getContent());
+            Assert.assertEquals(page.getContent().size(), 3);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testFindByRangeDateWithNull() throws Exception {
