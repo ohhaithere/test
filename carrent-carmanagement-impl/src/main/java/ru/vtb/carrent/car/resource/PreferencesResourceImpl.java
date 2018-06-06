@@ -27,7 +27,7 @@ public class PreferencesResourceImpl implements PreferencesResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.PreferencesResource.getValue')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_PreferencesResource_getValue')")
     public String getValue(@PathVariable("name") String name) {
         return service.find(name);
     }
@@ -36,7 +36,7 @@ public class PreferencesResourceImpl implements PreferencesResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.PreferencesResource.updatePreferences')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_PreferencesResource_updatePreferences')")
     public void updatePreferences(@PathVariable("name") String name, @RequestParam(name = "value") String value) {
         service.update(name, value);
     }
