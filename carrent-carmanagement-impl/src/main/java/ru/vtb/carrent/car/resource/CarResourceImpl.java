@@ -54,7 +54,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.createCar')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_createCar')")
     public CarDto createCar(@RequestBody CarDto carDto) {
         return mapper.toDto(service.create(mapper.fromDto(carDto)));
     }
@@ -63,7 +63,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.getCar')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCar')")
     public CarDto getCar(@PathVariable("id") Long id) {
         return mapper.toDto(service.find(id));
     }
@@ -72,7 +72,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.getCars')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCars')")
     public Page<CarDto> getCars(String filter, Pageable pageable) {
         List<KeyValuePair> filterList = null;
         if (!StringUtils.isEmpty(filter)) {
@@ -93,7 +93,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.updateCar')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_updateCar')")
     public CarDto updateCar(@PathVariable("id") Long id,
                             @RequestBody CarDto carDto) {
         return mapper.toDto(service.update(mapper.fromDto(carDto.setId(id))));
@@ -103,7 +103,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.inRentCar')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_inRentCar')")
     public CarDto inRentCar(@PathVariable("id") Long id,
                             @RequestParam("endDate")
                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
@@ -114,7 +114,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.inStockCar')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_inStockCar')")
     public CarDto inStockCar(@PathVariable("id") Long id) {
         return mapper.toDto(service.inStock(id));
     }
@@ -123,7 +123,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.onMaintenance')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_onMaintenance')")
     public CarDto onMaintenance(@PathVariable("id") Long id) {
         return mapper.toDto(service.onMaintenance(id));
     }
@@ -132,7 +132,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.dropOut')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_dropOut')")
     public CarDto dropOut(@PathVariable("id") Long id) {
         return mapper.toDto(service.dropOut(id));
     }
@@ -141,7 +141,7 @@ public class CarResourceImpl implements CarResource {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('ru.vtb.carrent.car.resource.CarResource.deleteCar')")
+    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_deleteCar')")
     public void deleteCar(@PathVariable("id") Long id) {
         service.delete(id);
     }

@@ -6,30 +6,34 @@ server:
 carrentacl:
   enabled: true
   methodsWithAuthorizedRoles:
-    "[ru.vtb.carrent.car.resource.CarResource.createCar]":
+    ru_vtb_carrent_car_resource_CarResource_createCar:
       - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.getCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.getCars]":
+    ru_vtb_carrent_car_resource_CarResource_getCar:
       - "Администратор"
       - "Менеджер по прокату"
       - "Менеджер по обслуживанию"
       - "Руководитель"
-    "[ru.vtb.carrent.car.resource.CarResource.updateCar]":
+    ru_vtb_carrent_car_resource_CarResource_getCars:
       - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.deleteCar]":
+      - "Менеджер по прокату"
+      - "Менеджер по обслуживанию"
+      - "Руководитель"
+    ru_vtb_carrent_car_resource_CarResource_updateCar:
       - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.dropOut]":
+    ru_vtb_carrent_car_resource_CarResource_deleteCar:
       - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.onMaintenance]":
+    ru_vtb_carrent_car_resource_CarResource_dropOut:
+      - "Менеджер по обслуживанию"
+    ru_vtb_carrent_car_resource_CarResource_onMaintenance:
+      - "Менеджер по обслуживанию"
+    ru_vtb_carrent_car_resource_CarResource_inStockCar:
+      - "Менеджер по обслуживанию"
+      - "Менеджер по прокату"
+    ru_vtb_carrent_car_resource_CarResource_inRentCar:
+      - "Менеджер по прокату"
+    ru_vtb_carrent_car_resource_PreferencesResource_getValue:
       - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.inStockCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.CarResource.inRentCar]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.PreferencesResource.getValue]":
-      - "Администратор"
-    "[ru.vtb.carrent.car.resource.PreferencesResource.updatePreferences]":
+    ru_vtb_carrent_car_resource_PreferencesResource_updatePreferences:
       - "Администратор"
 
 spring:

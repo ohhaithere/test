@@ -152,7 +152,7 @@ public class CarServiceImpl implements CarService {
         car.setNextStatus(Status.ON_MAINTENANCE.name());
         car.setDateOfNextStatus(new Date());
         Car updateCar = update(car, HistoryEvent.STATUS_CHANGED);
-        log.debug("{} car manual release from maintenance", car);
+        log.debug("{} car manual going to maintenance", car);
         stateMachineSupplier.getCarStateMachine(updateCar).sendEvent(Event.GO_TO_SERVICE);
         return updateCar;
     }
