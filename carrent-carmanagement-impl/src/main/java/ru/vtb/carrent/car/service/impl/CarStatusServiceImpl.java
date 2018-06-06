@@ -86,7 +86,7 @@ public class CarStatusServiceImpl implements CarStatusService {
     private Duration getServiceIntervalValue() {
         String value = preferencesService.find(SERVICE_INTERVAL_PROPERTY);
         try {
-            return Duration.ofMinutes(Integer.valueOf(value));
+            return Duration.ofMinutes(Long.parseLong(value));
         } catch (NumberFormatException e) {
             log.error(String.format("Property '%s' has invalid value: %s", SERVICE_INTERVAL_PROPERTY, value), e);
             return SERVICE_INTERVAL_DEFAULT;

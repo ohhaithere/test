@@ -22,7 +22,8 @@ import java.util.List;
  */
 public final class RepositoryHelper {
 
-    private RepositoryHelper(){}
+    private RepositoryHelper() {
+    }
 
 
     /**
@@ -75,7 +76,7 @@ public final class RepositoryHelper {
     /**
      * Converts values and creates a "LIKE" request.
      *
-     * @param list           range of objects
+     * @param list            range of objects
      * @param javaType        java type
      * @param criteriaBuilder criteria builder
      * @param path            path
@@ -85,8 +86,8 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(long.class) || javaType.isAssignableFrom(Long.class)) {
             try {
-                Long first = isUndefined(list.get(0)) ? Long.MIN_VALUE : Long.valueOf(list.get(0));
-                Long second = isUndefined(list.get(1)) ? Long.MAX_VALUE : Long.valueOf(list.get(1));
+                Long first = isUndefined(list.get(0)) ? Long.valueOf(Long.MIN_VALUE) : Long.valueOf(list.get(0));
+                Long second = isUndefined(list.get(1)) ? Long.valueOf(Long.MAX_VALUE) : Long.valueOf(list.get(1));
                 return criteriaBuilder.between(path, first, second);
             } catch (NumberFormatException e) {
                 // Just true by default
@@ -96,8 +97,10 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(int.class) || javaType.isAssignableFrom(Integer.class)) {
             try {
-                Integer first = isUndefined(list.get(0)) ? Integer.MIN_VALUE : Integer.valueOf(list.get(0));
-                Integer second = isUndefined(list.get(1)) ? Integer.MAX_VALUE : Integer.valueOf(list.get(1));
+                Integer first = isUndefined(list.get(0)) ? Integer.valueOf(Integer.MIN_VALUE)
+                        : Integer.valueOf(list.get(0));
+                Integer second = isUndefined(list.get(1)) ? Integer.valueOf(Integer.MAX_VALUE)
+                        : Integer.valueOf(list.get(1));
                 return criteriaBuilder.between(path, first, second);
             } catch (NumberFormatException e) {
                 // Just true by default
@@ -107,8 +110,10 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(double.class) || javaType.isAssignableFrom(Double.class)) {
             try {
-                Double first = isUndefined(list.get(0)) ? Double.MIN_VALUE : Double.valueOf(list.get(0));
-                Double second = isUndefined(list.get(1)) ? Double.MAX_VALUE : Double.valueOf(list.get(1));
+                Double first = isUndefined(list.get(0)) ? Double.valueOf(Double.MIN_VALUE)
+                        : Double.valueOf(list.get(0));
+                Double second = isUndefined(list.get(1)) ? Double.valueOf(Double.MAX_VALUE)
+                        : Double.valueOf(list.get(1));
                 return criteriaBuilder.between(path, first, second);
             } catch (NumberFormatException e) {
                 // Just true by default
@@ -118,7 +123,7 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(Date.class)) {
             try {
-                SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 Date startDate = isUndefined(list.get(0)) ? new GregorianCalendar(1900, 1, 1).getTime() : sdf.parse(list.get(0));
                 Date endDate = isUndefined(list.get(1)) ? new GregorianCalendar(2200, 1, 1).getTime() : sdf.parse(list.get(1));
                 return criteriaBuilder.between(path, startDate, endDate);
