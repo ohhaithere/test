@@ -94,7 +94,7 @@ public class CarStatusServiceImpl implements CarStatusService {
     }
 
     @Override
-    public void rent(Car car, PreorderDto preorder) {
+    public void rent(Car car) {
         car.setCurrentStatus(Status.IN_RENT.name());
         car.setDateOfCurrentStatus(new Date());
         car.setNextStatus(Status.IN_STOCK.name());

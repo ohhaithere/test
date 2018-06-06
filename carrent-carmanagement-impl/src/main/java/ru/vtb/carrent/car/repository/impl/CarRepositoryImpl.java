@@ -66,7 +66,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
                 path = root.get(key);
                 if (path == null) {
-                    log.error(String.format("Field with name '%s' not found", key));
+                    log.error("Field with name {} not found", key);
                     return new PageImpl<>(Collections.emptyList());
                 }
                 javaType = path.getModel().getBindableJavaType();

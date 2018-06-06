@@ -79,7 +79,7 @@ public interface CarService {
      * Put Car into rent.
      *
      * @param id      car id
-     * @param endDate
+     * @param endDate end date
      * @return updated car
      */
     Car inRent(Long id, Date endDate);

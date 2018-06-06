@@ -89,8 +89,7 @@ public class CarStateMachineBuilder {
     }
 
     private Action<Status, Event> rent() {
-        return context -> carStatusService.rent(getCarFromContext(context),
-                context.getExtendedState().get(ContextVars.PREORDER, PreorderDto.class));
+        return context -> carStatusService.rent(getCarFromContext(context));
     }
 
     private Action<Status, Event> release() {

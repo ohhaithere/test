@@ -17,6 +17,10 @@ import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.dto.CarDto;
 import uk.co.jemos.podam.api.PodamFactory;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Car Mapper test.
  *
@@ -44,6 +48,26 @@ public class CarMapperTest extends AbstractTestNGSpringContextTests {
     public void testFromDto() throws Exception {
         CarDto requestDto = podamFactory.manufacturePojo(CarDto.class);
         Car request = carMapper.fromDto(requestDto);
+        assertEquals(requestDto.getId(), request.getId());
+        assertEquals(requestDto.getModel(), request.getModel());
+        assertEquals(requestDto.getMileage(), request.getMileage());
+    }
+
+    @Test
+    public void testToDtoList() throws Exception {
+        Car request = podamFactory.manufacturePojo(Car.class);
+        List<CarDto> requestDtoList = carMapper.toDto(Arrays.asList(request));
+        CarDto requestDto = requestDtoList.get(0);
+        assertEquals(request.getId(), requestDto.getId());
+        assertEquals(request.getModel(), requestDto.getModel());
+        assertEquals(request.getMileage(), requestDto.getMileage());
+    }
+
+    @Test
+    public void testFromDtoList() throws Exception {
+        CarDto requestDto = podamFactory.manufacturePojo(CarDto.class);
+        List<Car> requestList = carMapper.fromDto(Arrays.asList(requestDto));
+        Car request = requestList.get(0);
         assertEquals(requestDto.getId(), request.getId());
         assertEquals(requestDto.getModel(), request.getModel());
         assertEquals(requestDto.getMileage(), request.getMileage());

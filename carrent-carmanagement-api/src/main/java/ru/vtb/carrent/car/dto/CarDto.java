@@ -6,8 +6,7 @@
 package ru.vtb.carrent.car.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
@@ -18,8 +17,7 @@ import java.util.Date;
  *
  * @author Valiantsin_Charkashy
  */
-@Getter
-@Setter
+@Data
 @ToString
 @Accessors(chain = true)
 public class CarDto {

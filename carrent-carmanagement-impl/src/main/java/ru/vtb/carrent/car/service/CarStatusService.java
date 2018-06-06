@@ -9,7 +9,7 @@ import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.preorder.dto.PreorderDto;
 
 /**
- * Documentation template
+ * Status service.
  *
  * @author Tsimafei_Dynikau
  */
@@ -20,5 +20,5 @@ public interface CarStatusService {
 
     void drop(Car car);
 
-    void rent(Car car, PreorderDto preorder);
+    void rent(Car car);
 }

@@ -38,7 +38,7 @@ public class CarScheduleServiceImpl {
     private final Sender sender;
 
     /**
-     * Scheduled job which would scan cars and send messages about free cars to preorder service
+     * Scheduled job which would scan cars and send messages about free cars to preorder service.
      */
     @Scheduled(cron = "0 * * ? * *")
     public void checkAndNotify() {
@@ -70,8 +70,8 @@ public class CarScheduleServiceImpl {
         log.debug("{} cars in stock found", carsInStock.size());
         Date now = new Date();
         for (Car car : carsInStock) {
-            if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now) &&
-                    Status.IN_RENT.name().equalsIgnoreCase(car.getNextStatus())) {
+            if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now)
+                    && Status.IN_RENT.name().equalsIgnoreCase(car.getNextStatus())) {
                 log.debug("{} car is going to rent", car);
                 stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.PREORDER_BOOKING);
             }

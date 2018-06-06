@@ -89,40 +89,6 @@ public final class JsonUtils {
     }
 
     /**
-     * Converts JSON to map.
-     *
-     * @param json - json to convert
-     * @return map
-     * @throws IOException problems of conversation
-     */
-    public static List<Object> jsonToList(String json) throws IOException {
-        return READER.forType(List.class).readValue(json);
-    }
-
-    /**
-     * Converts input stream to map.
-     *
-     * @param is - input stream to convert
-     * @return map
-     * @throws IOException problems of conversation
-     */
-    public static Map<String, Object> streamToMap(InputStream is) throws IOException {
-        return READER.forType(Map.class).readValue(is);
-    }
-
-    /**
-     * Converts input stream to Java object.
-     *
-     * @param is     - input stream to convert
-     * @param toType - target bean type (class)
-     * @return map
-     * @throws IOException problems of conversation
-     */
-    public static <T> T streamToBean(InputStream is, Class<T> toType) throws IOException {
-        return READER.forType(toType).readValue(is);
-    }
-
-    /**
      * Serializes bean to JSON string.
      *
      * @param bean - bean to convert
@@ -146,39 +112,5 @@ public final class JsonUtils {
             LOGGER.warn("Cant serialize bean to JSON", e);
         }
         return defaultValue;
-    }
-
-    /**
-     * Converts map to bean class instance.
-     *
-     * @param map    - map to convert
-     * @param toType - target bean type (class)
-     * @return instance of bean type
-     */
-    @SuppressWarnings("rawtypes")
-    public static <T> T mapToBean(Map map, Class<T> toType) {
-        return MAPPER.convertValue(map, toType);
-    }
-
-    /**
-     * Converts bean to bean.
-     *
-     * @param bean   - bean to convert
-     * @param toType - target bean type (class)
-     * @return instance of bean type
-     */
-    public static <T> T beanToBean(Object bean, Class<T> toType) {
-        return MAPPER.convertValue(bean, toType);
-    }
-
-    /**
-     * Converts bean to map JSON representation.
-     *
-     * @param bean - bean to convert
-     * @return map
-     */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> beanToMap(Object bean) {
-        return MAPPER.convertValue(bean, Map.class);
     }
 }

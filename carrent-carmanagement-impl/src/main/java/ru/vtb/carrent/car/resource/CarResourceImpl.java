@@ -78,9 +78,9 @@ public class CarResourceImpl implements CarResource {
         if (!StringUtils.isEmpty(filter)) {
             try {
                 filterList = FilterUtils.getFilterList(filter);
-                log.debug("Filter List:" + filterList.toString());
+                log.debug("Filter List: {}", filterList);
             } catch (IOException e) {
-                log.error(String.format("filter (%s) could be parsed.", filter), e);
+                log.error("filter ({}) could be parsed.", filter, e);
             }
         }
 

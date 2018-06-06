@@ -58,7 +58,7 @@ public class CarStateMachineTest {
 
         stateMachine.sendEvent(Event.PREORDER_BOOKING);
 
-        verify(carStatusService).rent(testCar, null);
+        verify(carStatusService).rent(testCar);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class CarStateMachineTest {
 
         stateMachine.sendEvent(Event.PREORDER_BOOKING);
 
-        verify(carStatusService, never()).rent(testCar, null);
+        verify(carStatusService, never()).rent(testCar);
     }
 
     @Test

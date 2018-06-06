@@ -60,14 +60,12 @@ public interface CarResource {
     /**
      * Get paginated cars by filter.
      *
-     * @param request page request
      * @return found cars
      */
     @ApiOperation("Get Cars")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "request", dataType = "FilteredPageRequest", paramType = "query",
-                    value = "Request contains filter string in Base64 format that represents the filter and" +
-                            ""),
+                    value = "Request contains filter string in Base64 format that represents the filter and"),
     })
     @GetMapping
     Page<CarDto> getCars(String filter, Pageable pageable);

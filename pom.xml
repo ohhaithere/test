@@ -57,20 +57,8 @@
 
         <sonar.exclusions>
             **/domain/**,
-            **/entity/**,
-            **/car/message/**,
-            **/car/resource/**,
-            **/car/filter/**,
-            **/car/util/**,
-            **/feign/**,
             **/dto/**,
-            **/exception/**,
-            **/status/**,
-            **/event/**,
-            **/service/**,
             **/config/**,
-            **/listener/**,
-            **/client/**,
         </sonar.exclusions>
 
         <!-- Build number to be forwarded from Jenkins while building-->

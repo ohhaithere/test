@@ -1,7 +1,12 @@
+/*
+ * VTB Group. Do not reproduce without permission in writing.
+ * Copyright (c) 2018 VTB Group. All rights reserved.
+ */
+
 package ru.vtb.carrent.car.status;
 
 /**
- * Car statuses
+ * Car statuses.
  *
  * @author Valiantsin_Charkashy
  */

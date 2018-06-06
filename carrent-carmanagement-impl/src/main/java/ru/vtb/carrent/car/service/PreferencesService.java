@@ -6,6 +6,8 @@
 package ru.vtb.carrent.car.service;
 
 /**
+ * Preference service.
+ *
  * @author Mikhail_ChenLenSon
  */
 public interface PreferencesService {

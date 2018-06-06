@@ -22,12 +22,6 @@ import java.util.List;
  */
 public final class RepositoryHelper {
 
-    /**
-     * Formatter for date
-     *
-     */
-    private static final SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
-
     private RepositoryHelper(){}
 
 
@@ -44,11 +38,7 @@ public final class RepositoryHelper {
     public static Predicate getEqualCriteria(String value, Class javaType, CriteriaBuilder criteriaBuilder,
                                              Path path, boolean strict) {
         if (javaType.isAssignableFrom(boolean.class) || javaType.isAssignableFrom(Boolean.class)) {
-            try {
-                return criteriaBuilder.equal(path, Boolean.valueOf(value));
-            } catch (NumberFormatException e) {
-                return criteriaBuilder.conjunction();
-            }
+            return criteriaBuilder.equal(path, Boolean.valueOf(value));
         }
 
         if (javaType.isAssignableFrom(long.class) || javaType.isAssignableFrom(Long.class)) {
@@ -128,6 +118,7 @@ public final class RepositoryHelper {
 
         if (javaType.isAssignableFrom(Date.class)) {
             try {
+                SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
                 Date startDate = isUndefined(list.get(0)) ? new GregorianCalendar(1900, 1, 1).getTime() : sdf.parse(list.get(0));
                 Date endDate = isUndefined(list.get(1)) ? new GregorianCalendar(2200, 1, 1).getTime() : sdf.parse(list.get(1));
                 return criteriaBuilder.between(path, startDate, endDate);

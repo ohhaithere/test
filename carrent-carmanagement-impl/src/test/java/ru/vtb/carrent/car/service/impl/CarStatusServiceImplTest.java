@@ -56,6 +56,6 @@ public class CarStatusServiceImplTest {
 
     @Test
     public void testRent() {
-        carStatusService.rent(new Car(), new PreorderDto());
+        carStatusService.rent(new Car());
     }
 }

@@ -5,7 +5,9 @@
 
 package ru.vtb.carrent.car.domain.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
@@ -15,94 +17,92 @@ import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * Car Entity
+ * Car Entity.
  *
  * @author Valiantsin_Charkashy
  */
-@Getter
-@Setter
-@Accessors(chain = true)
 @Entity
-@ToString
+@Data
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Car {
 
     /**
-     * Идентификатор
+     * Идентификатор.
      */
     @Id
     @GeneratedValue
     private Long id;
 
     /**
-     * Марка автомобиля
+     * Марка автомобиля.
      */
     @Column(name = "model")
     private String model;
 
     /**
-     * Государственный номер автомобиля
+     * Государственный номер автомобиля.
      */
     @Column(name = "reg_number")
     private String regNumber;
 
     /**
-     * Год выпуска
+     * Год выпуска.
      */
     @Column(name = "date_of_manufacture")
     private Date dateOfManufacture;
 
     /**
-     * Пробег на последнюю дату в статусе в наличии
+     * Пробег на последнюю дату в статусе в наличии.
      */
     @Column(name = "mileage")
     private int mileage;
 
     /**
-     * Дата последнего ТО
+     * Дата последнего ТО.
      */
     @Column(name = "date_of_last_check")
     private Date dateOfLastCheck;
 
     /**
-     * Дата следуюшего ТО
+     * Дата следуюшего ТО.
      */
     @Column(name = "date_of_next_check")
     private Date dateOfNextCheck;
 
     /**
-     * Текуший статус
+     * Текуший статус.
      */
     @Column(name = "current_status")
     private String currentStatus;
 
     /**
-     * Дата перехода в текущий статус
+     * Дата перехода в текущий статус.
      */
     @Column(name = "date_of_current_status")
     private Date dateOfCurrentStatus;
 
     /**
-     * Следующий статус
+     * Следующий статус.
      */
     @Column(name = "next_status")
     private String nextStatus;
 
     /**
-     * Плановая дата следуюшего статуса
+     * Плановая дата следуюшего статуса.
      */
     @Column(name = "date_of_next_status")
     private Date dateOfNextStatus;
 
     /**
-     * ID Локации
+     * ID Локации.
      */
     @Column(name = "location_id")
     private Long locationId;
 
     /**
-     * Дата окончания аренды ТС
+     * Дата окончания аренды ТС.
      */
     @Column(name = "end_date_of_rent")
     private Date endDateOfRent;
