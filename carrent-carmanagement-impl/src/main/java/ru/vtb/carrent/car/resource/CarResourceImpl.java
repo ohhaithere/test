@@ -175,7 +175,7 @@ public class CarResourceImpl implements CarResource {
             filterList.add(
                     new KeyValuePair(
                             "locationId",
-                            userLocationId
+                            userLocationId.toString()
                     )
             );
         }
