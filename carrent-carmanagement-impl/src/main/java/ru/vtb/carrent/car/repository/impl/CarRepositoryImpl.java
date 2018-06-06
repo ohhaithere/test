@@ -61,20 +61,16 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
             Path path;
             Class javaType;
             String key;
-            String value;
             for (KeyValuePair pair : filter) {
                 key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
-                path = root.get(key);
+                path = getPath(root, key);
                 if (path == null) {
-                    log.error("Field with name {} not found", key);
+                    log.error(String.format("Field with name {%s} not found", key));
                     return new PageImpl<>(Collections.emptyList());
                 }
                 javaType = path.getModel().getBindableJavaType();
                 if (pair.getValue() instanceof String) {
-                    value = (String) pair.getValue();
-                    if (StringUtils.isNotBlank(value)) {
-                        predicates.add(RepositoryHelper.getEqualCriteria(value.trim(), javaType, criteriaBuilder, path, false));
-                    }
+                    predicates.add(RepositoryHelper.getEqualCriteria(((String) pair.getValue()).trim(), javaType, criteriaBuilder, path, false));
                 } else if (pair.getValue() instanceof List) {
                     predicates.add(RepositoryHelper.getBetweenCriteria((List<String>) pair.getValue(), javaType, criteriaBuilder, path));
                 }
@@ -90,5 +86,14 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         Long total = em.createQuery(countQuery).getSingleResult();
         List<Car> content = total > pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl<>(content, pageable, total);
+    }
+
+    private Path getPath(Root<Car> root, String key) {
+        try {
+            return root.get(key);
+        } catch (IllegalArgumentException e) {
+            log.error(String.format("Field with name {%s} not found", key), e);
+        }
+        return null;
     }
 }
