@@ -18,6 +18,11 @@ carrentacl:
       - "Менеджер по прокату"
       - "Менеджер по обслуживанию"
       - "Руководитель"
+    ru_vtb_carrent_car_resource_CarResource_getCarsForRole:
+      - "Администратор"
+      - "Менеджер по прокату"
+      - "Менеджер по обслуживанию"
+      - "Руководитель"
     ru_vtb_carrent_car_resource_CarResource_updateCar:
       - "Администратор"
     ru_vtb_carrent_car_resource_CarResource_deleteCar:
