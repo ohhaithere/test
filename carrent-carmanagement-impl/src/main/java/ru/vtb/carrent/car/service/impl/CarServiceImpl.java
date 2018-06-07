@@ -105,7 +105,6 @@ public class CarServiceImpl implements CarService {
         incomingCar.setCurrentStatus(savedCar.getCurrentStatus());
         incomingCar.setDateOfCurrentStatus(savedCar.getDateOfCurrentStatus());
         incomingCar.setNextStatus(savedCar.getNextStatus());
-        incomingCar.setDateOfNextCheck(savedCar.getDateOfNextCheck());
         incomingCar.setEndDateOfRent(savedCar.getEndDateOfRent());
     }
 
