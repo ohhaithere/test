@@ -71,9 +71,10 @@ public interface CarService {
      *
      * @param car   Car
      * @param event HistoryEvent
+     * @param fromui fromui flag.
      * @return updated car
      */
-    Car update(Car car, HistoryEvent event);
+    Car update(Car car, HistoryEvent event, boolean fromui);
 
     /**
      * Put Car into rent.

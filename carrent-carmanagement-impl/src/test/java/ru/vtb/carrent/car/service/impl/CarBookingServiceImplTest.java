@@ -32,6 +32,6 @@ public class CarBookingServiceImplTest {
 
         Assert.assertEquals(testCar.getNextStatus(), Status.IN_RENT.name());
         Assert.assertEquals(testCar.getCurrentStatus(), Status.IN_STOCK.name());
-        verify(carService).update(testCar, HistoryEvent.STATUS_CHANGED);
+        verify(carService).update(testCar, HistoryEvent.STATUS_CHANGED,false);
     }
 }

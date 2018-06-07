@@ -51,7 +51,7 @@ public class CarStatusServiceImpl implements CarStatusService {
         car.setDateOfNextCheck(Date.from(car.getDateOfLastCheck().toInstant().plus(getServiceIntervalValue())));
         car.setDateOfNextStatus(null);
         car.setNextStatus(null);
-        carService.update(car, HistoryEvent.STATUS_CHANGED);
+        carService.update(car, HistoryEvent.STATUS_CHANGED, false);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CarStatusServiceImpl implements CarStatusService {
         car.setDateOfCurrentStatus(new Date());
         car.setDateOfNextStatus(null);
         car.setNextStatus(null);
-        carService.update(car, HistoryEvent.STATUS_CHANGED);
+        carService.update(car, HistoryEvent.STATUS_CHANGED, false);
         //SEND KAFKA MESSAGE FOR PRE ORDER SERVICE
         MessageContainer<CarReleasedDto> messageContainer = new MessageContainer<>(
                 new CarReleasedDto(
@@ -81,7 +81,7 @@ public class CarStatusServiceImpl implements CarStatusService {
         car.setDateOfCurrentStatus(new Date());
         car.setNextStatus(null);
         car.setDateOfNextStatus(null);
-        carService.update(car, HistoryEvent.STATUS_CHANGED);
+        carService.update(car, HistoryEvent.STATUS_CHANGED, false);
     }
 
     private Duration getServiceIntervalValue() {
@@ -101,6 +101,6 @@ public class CarStatusServiceImpl implements CarStatusService {
         car.setNextStatus(Status.IN_STOCK.name());
         car.setDateOfNextStatus(car.getEndDateOfRent());
         car.setLocationId(car.getLocationId());//As was discussed - car would be return to the same place.
-        carService.update(car, HistoryEvent.STATUS_CHANGED);
+        carService.update(car, HistoryEvent.STATUS_CHANGED, false);
     }
 }

@@ -33,6 +33,6 @@ public class CarBookingServiceImpl {
         car.setNextStatus(Status.IN_RENT.name());
         car.setDateOfNextStatus(preorderDto.getDateFrom());
         car.setEndDateOfRent(preorderDto.getDateTo());
-        carService.update(car, HistoryEvent.STATUS_CHANGED);
+        carService.update(car, HistoryEvent.STATUS_CHANGED, false);
     }
 }

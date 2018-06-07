@@ -87,14 +87,16 @@ public class CarServiceImpl implements CarService {
     @Override
     @Transactional
     public Car update(Car car) {
-        return update(car, HistoryEvent.EDIT);
+        return update(car, HistoryEvent.EDIT, true);
     }
 
     @Override
-    public Car update(Car car, HistoryEvent event) {
+    public Car update(Car car, HistoryEvent event, boolean fromui) {
         Car savedCar = find(car.getId());
 
-        updateNotChangeableFields(car, savedCar);
+        if (fromui) {
+            updateNotChangeableFields(car, savedCar);
+        }
 
         Car updatedCar = repository.save(car);
         historyService.notify(car, event);
@@ -118,7 +120,7 @@ public class CarServiceImpl implements CarService {
         car.setNextStatus(Status.IN_RENT.name());
         car.setDateOfNextStatus(new Date());
         car.setEndDateOfRent(endDate);
-        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
+        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED, false);
         log.debug("{} car manual going to rent", car);
         stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.PREORDER_BOOKING);
         return updatedCar;
@@ -133,7 +135,7 @@ public class CarServiceImpl implements CarService {
         final Car car = find(id);
         car.setNextStatus(Status.IN_STOCK.name());
         car.setDateOfNextStatus(new Date());
-        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
+        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED, false);
         if (Status.ON_MAINTENANCE.name().equalsIgnoreCase(updatedCar.getCurrentStatus())) {
             log.debug("{} car manual release from maintenance", car);
             stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.SERVICE_DONE);
@@ -154,7 +156,7 @@ public class CarServiceImpl implements CarService {
         final Car car = find(id);
         car.setNextStatus(Status.ON_MAINTENANCE.name());
         car.setDateOfNextStatus(new Date());
-        Car updateCar = update(car, HistoryEvent.STATUS_CHANGED);
+        Car updateCar = update(car, HistoryEvent.STATUS_CHANGED, false);
         log.debug("{} car manual going to maintenance", car);
         stateMachineSupplier.getCarStateMachine(updateCar).sendEvent(Event.GO_TO_SERVICE);
         return updateCar;
@@ -169,7 +171,7 @@ public class CarServiceImpl implements CarService {
         final Car car = find(id);
         car.setNextStatus(Status.DROP_OUT.name());
         car.setDateOfNextStatus(new Date());
-        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED);
+        Car updatedCar = update(car, HistoryEvent.STATUS_CHANGED, false);
         log.debug("{} car manual going to be dropped", updatedCar);
         stateMachineSupplier.getCarStateMachine(updatedCar).sendEvent(Event.DROP_CAR);
         return updatedCar;
