@@ -17,7 +17,6 @@ import ru.vtb.carrent.car.service.PreferencesService;
 import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.preorder.dto.CarReleasedDto;
 import ru.vtb.carrent.preorder.dto.MessageContainer;
-import ru.vtb.carrent.preorder.dto.PreorderDto;
 
 import java.time.Duration;
 import java.util.Date;
@@ -67,7 +66,9 @@ public class CarStatusServiceImpl implements CarStatusService {
         MessageContainer<CarReleasedDto> messageContainer = new MessageContainer<>(
                 new CarReleasedDto(
                         car.getId(),
-                        car.getLocationId()
+                        car.getLocationId(),
+                        car.getModel(),
+                        car.getRegNumber()
                 )
         );
         sender.send(KafkaConfig.TOPIC, messageContainer);
