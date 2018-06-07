@@ -6,12 +6,12 @@
 package ru.vtb.carrent.car.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -24,6 +24,8 @@ import java.util.List;
  */
 @Slf4j
 public final class RepositoryHelper {
+
+    private static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance("yyyy-MM-dd");
 
     private RepositoryHelper() {
     }
@@ -90,11 +92,10 @@ public final class RepositoryHelper {
                 Double second = getDouble(list.get(1), Double.MAX_VALUE);
                 return criteriaBuilder.between(path, first, second);
             } else if (javaType.isAssignableFrom(Date.class)) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 Date startDate = isUndefined(list.get(0))
-                        ? new GregorianCalendar(1900, 1, 1).getTime() : sdf.parse(list.get(0));
+                        ? new GregorianCalendar(1900, 1, 1).getTime() : DATE_FORMATTER.parse(list.get(0));
                 Date endDate = isUndefined(list.get(1))
-                        ? new GregorianCalendar(2200, 1, 1).getTime() : sdf.parse(list.get(1));
+                        ? new GregorianCalendar(2200, 1, 1).getTime() : DATE_FORMATTER.parse(list.get(1));
                 return criteriaBuilder.between(path, startDate, endDate);
             }
         } catch (ParseException | NumberFormatException e) {

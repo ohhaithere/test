@@ -62,6 +62,7 @@
             **/event/**,
             **/exception/**,
             **/config/**,
+            **/status/**,
         </sonar.exclusions>
 
         <!-- Build number to be forwarded from Jenkins while building-->
