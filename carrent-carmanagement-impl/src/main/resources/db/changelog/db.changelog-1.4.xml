@@ -110,4 +110,8 @@
     <changeSet id="20180607-new-start-value-set-to-car-id-seq" author="Yuliya_Fedartsova">
         <sql>select setval('car_id_seq', max(id)) from carmanagement.car</sql>
     </changeSet>
+
+    <changeSet id="20180607-new-start-value-set-to-hibernate_sequence" author="Roman Meerson">
+        <sql>select setval('hibernate_sequence', max(id)) from carmanagement.car</sql>
+    </changeSet>
 </databaseChangeLog>
