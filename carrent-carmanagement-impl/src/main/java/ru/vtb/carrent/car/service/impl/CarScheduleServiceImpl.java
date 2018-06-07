@@ -91,7 +91,7 @@ public class CarScheduleServiceImpl {
         log.debug("{} cars in stock found", carsInStock.size());
         Date now = new Date();
         for (Car car : carsInStock) {
-            if (car.getDateOfNextCheck().before(now)) {
+            if (car.getDateOfNextCheck() != null && car.getDateOfNextCheck().before(now)) {
                 log.debug("{} car is going to maintenance", car);
                 stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.GO_TO_SERVICE);
             }
