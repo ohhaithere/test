@@ -43,6 +43,7 @@
         <liquibase.version>3.5.3</liquibase.version>
         <postgresql.version>42.1.4</postgresql.version>
         <spring-statemachine.version>1.2.11.RELEASE</spring-statemachine.version>
+        <mockito.version>2.18.3</mockito.version>
 
         <!--
           Components configuration (override for packaging to Docker)
@@ -148,6 +149,11 @@
                 <artifactId>podam</artifactId>
                 <version>${podam.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
