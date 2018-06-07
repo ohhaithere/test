@@ -24,15 +24,13 @@ import ru.vtb.carrent.car.status.Status;
 import ru.vtb.carrent.car.util.FilterUtils;
 import ru.vtb.carrent.car.util.mapper.CarMapper;
 import ru.vtb.carrent.jwt.annotation.EnableJwt;
-import ru.vtb.carrent.jwt.model.UserInfo;
-import ru.vtb.carrent.jwt.util.JwtUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,23 +45,29 @@ import java.util.stream.Collectors;
 @EnableJwt
 public class CarResourceImpl implements CarResource {
 
-    private final CarService service;
-    private final CarMapper mapper;
     private static final String ADMIN_ROLE = "Администратор";
     private static final String SERVICE_MANAGER_ROLE = "Менеджер по обслуживанию";
     private static final String RENTAL_MANAGER_ROLE = "Менеджер по прокату";
     private static final String CEO_ROLE = "Руководитель";
+    private static final List<String> ROLES_WITH_LOCATION_CONSTRAINT = Collections.singletonList(RENTAL_MANAGER_ROLE);
+    private static final Map<String, List<Status>> AVAILABLE_STATUSES_FOR_ROLES = buildAvailableStatusesMap();
+
+    private final CarService service;
+    private final CarMapper mapper;
+    private final SecurityContextHelper securityContextHelper;
 
     /**
      * Car controller constructor.
      *
-     * @param service   service
-     * @param carMapper mapper
+     * @param service               service
+     * @param carMapper             mapper
+     * @param securityContextHelper jwt helper
      */
     @Autowired
-    public CarResourceImpl(CarService service, CarMapper carMapper) {
+    public CarResourceImpl(CarService service, CarMapper carMapper, SecurityContextHelper securityContextHelper) {
         this.service = service;
         this.mapper = carMapper;
+        this.securityContextHelper = securityContextHelper;
     }
 
     /**
@@ -90,53 +94,56 @@ public class CarResourceImpl implements CarResource {
     @Override
     @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCars')")
     public Page<CarDto> getCars(String filter, Pageable pageable) {
-        final Map<String, List<Status>> availableStatusesForRoles = new HashMap<>();
-        availableStatusesForRoles.put(ADMIN_ROLE, Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE));
-        availableStatusesForRoles.put(SERVICE_MANAGER_ROLE, Arrays.asList(Status.ON_MAINTENANCE));
-        availableStatusesForRoles.put(RENTAL_MANAGER_ROLE, Arrays.asList(Status.IN_STOCK, Status.IN_RENT));
-        availableStatusesForRoles.put(CEO_ROLE, Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE));
-        List<String> rolesWithLocationConstraint = Collections.singletonList(RENTAL_MANAGER_ROLE);
-        UserInfo userInfo;
-        List<String> currentUserRoles = Collections.singletonList(ADMIN_ROLE);
-        Long userLocationId = 0L;
-        try {
-            userInfo = JwtUtils.getUserInfo();
-            currentUserRoles = userInfo.getRoles();
-            userLocationId = userInfo.getLocationId();
-        } catch (Exception e) { //NOSONAR
-            log.error("Problems with jwt info taking", e);
-        }
+        List<String> currentUserRoles = securityContextHelper.getRoles();
+        Long userLocationId = securityContextHelper.getLocationId();
         log.debug("{}", currentUserRoles);
-        List<KeyValuePair> filterList = new LinkedList<>();
-        if (!StringUtils.isEmpty(filter)) {
-            try {
-                filterList = FilterUtils.getFilterList(filter);
-                log.debug("Filter List: {}", filterList);
-            } catch (IOException e) {
-                log.error("filter ({}) could be parsed.", filter, e);
-            }
-        }
+        List<KeyValuePair> filterList = parseFilters(filter);
+
         if (!currentUserRoles.contains(SERVICE_MANAGER_ROLE)) {
-            filterList.add(new KeyValuePair("currentStatus", String.join(",", currentUserRoles.stream().map(role -> String.join(",",
-                    availableStatusesForRoles.get(role).stream().map(Status::name).collect(Collectors.toList()))).collect(Collectors.toList()))));
+            filterList.add(new KeyValuePair("currentStatus", String.join(",",
+                    currentUserRoles.stream().map(
+                            role -> String.join(",",
+                                    AVAILABLE_STATUSES_FOR_ROLES.get(role)
+                                            .stream().map(Status::name).collect(Collectors.toList())
+                            )
+                    ).collect(Collectors.toList())
+            )));
         }
-        Boolean locationConstraintEnabled = Boolean.FALSE;
-        for (String role : rolesWithLocationConstraint) {
-            locationConstraintEnabled = locationConstraintEnabled || currentUserRoles.contains(role);
-        }
-        log.debug("Location constraint enabled {}", locationConstraintEnabled);
-        if (locationConstraintEnabled) {
+
+        if (isLocationConstraintAvailable(currentUserRoles)) {
+            log.debug("Location constraint enabled");
             filterList.add(new KeyValuePair("locationId", userLocationId.toString()));
         }
+
         //МО должен видеть машины "Скоро в обслуживание"
         //по требованию это те автомобили,
         //которые имеют nextStatus == ON_MAINTENANCE
         if (currentUserRoles.contains(SERVICE_MANAGER_ROLE)) {
             filterList.add(new KeyValuePair("currentStatus", new OrValue(String.join(",", currentUserRoles.stream().map(role -> String.join(",",
-                    availableStatusesForRoles.get(role).stream().map(Status::name).collect(Collectors.toList()))).collect(Collectors.toList())),
-                        "nextStatus", Status.ON_MAINTENANCE.name())));
+                    AVAILABLE_STATUSES_FOR_ROLES.get(role).stream().map(Status::name).collect(Collectors.toList()))).collect(Collectors.toList())),
+                    "nextStatus", Status.ON_MAINTENANCE.name())));
         }
         return service.getByFilter(filterList, pageable).map(mapper::toDto);
+    }
+
+    private boolean isLocationConstraintAvailable(List<String> currentUserRoles) {
+        for (String role : ROLES_WITH_LOCATION_CONSTRAINT) {
+            if (currentUserRoles.contains(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<KeyValuePair> parseFilters(String filter) {
+        if (!StringUtils.isEmpty(filter)) {
+            try {
+                return FilterUtils.getFilterList(filter);
+            } catch (IOException e) {
+                log.error("filter ({}) could be parsed.", filter, e);
+            }
+        }
+        return new ArrayList<>();
     }
 
     /**
@@ -196,4 +203,16 @@ public class CarResourceImpl implements CarResource {
         service.delete(id);
     }
 
+    private static Map<String, List<Status>> buildAvailableStatusesMap() {
+        Map<String, List<Status>> buildMap = new HashMap<>();
+        buildMap.put(ADMIN_ROLE, Collections.unmodifiableList(
+                Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE)));
+        buildMap.put(SERVICE_MANAGER_ROLE, Collections.unmodifiableList(
+                Arrays.asList(Status.ON_MAINTENANCE)));
+        buildMap.put(RENTAL_MANAGER_ROLE, Collections.unmodifiableList(
+                Arrays.asList(Status.IN_STOCK, Status.IN_RENT)));
+        buildMap.put(CEO_ROLE, Collections.unmodifiableList(
+                Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE)));
+        return Collections.unmodifiableMap(buildMap);
+    }
 }

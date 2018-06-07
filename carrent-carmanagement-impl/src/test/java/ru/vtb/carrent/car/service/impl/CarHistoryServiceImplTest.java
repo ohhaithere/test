@@ -1,4 +1,12 @@
+/*
+ * VTB Group. Do not reproduce without permission in writing.
+ * Copyright (c) 2018 VTB Group. All rights reserved.
+ */
+
 package ru.vtb.carrent.car.service.impl;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,11 +22,8 @@ import ru.vtb.carrent.car.util.mapper.CarMapper;
 import ru.vtb.carrent.organization.dto.LocationDto;
 import ru.vtb.carrent.preorder.dto.MessageContainer;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 /**
- * Documentation template
+ * Documentation template.
  *
  * @author Tsimafei_Dynikau
  */

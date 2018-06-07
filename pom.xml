@@ -64,6 +64,7 @@
             **/exception/**,
             **/config/**,
             **/status/**,
+            **/CarResourceImpl.*,
         </sonar.exclusions>
 
         <!-- Build number to be forwarded from Jenkins while building-->
