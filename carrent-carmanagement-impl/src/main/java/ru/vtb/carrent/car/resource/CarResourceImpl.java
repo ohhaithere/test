@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vtb.carrent.car.domain.model.KeyValuePair;
+import ru.vtb.carrent.car.domain.model.OrValue;
 import ru.vtb.carrent.car.dto.CarDto;
 import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.status.Status;
@@ -145,27 +146,29 @@ public class CarResourceImpl implements CarResource {
                 log.error("filter ({}) could be parsed.", filter, e);
             }
         }
-        filterList.add(
-                new KeyValuePair(
-                        "currentStatus",
-                        String.join(
-                                ",",
-                                currentUserRoles.stream().map(
-                                        role -> String.join(
-                                                ",",
-                                                availableStatusesForRoles.get(role)
-                                                        .stream()
-                                                        .map(Status::name)
-                                                        .collect(
-                                                                Collectors.toList()
-                                                        )
-                                        )
-                                ).collect(
-                                        Collectors.toList()
-                                )
-                        )
-                )
-        );
+        if (!currentUserRoles.contains(managerPo)) {
+            filterList.add(
+                    new KeyValuePair(
+                            "currentStatus",
+                            String.join(
+                                    ",",
+                                    currentUserRoles.stream().map(
+                                            role -> String.join(
+                                                    ",",
+                                                    availableStatusesForRoles.get(role)
+                                                            .stream()
+                                                            .map(Status::name)
+                                                            .collect(
+                                                                    Collectors.toList()
+                                                            )
+                                            )
+                                    ).collect(
+                                            Collectors.toList()
+                                    )
+                            )
+                    )
+            );
+        }
         Boolean locationConstraintEnabled = Boolean.FALSE;
         for (String role : rolesWithLocationConstraint) {
             locationConstraintEnabled = locationConstraintEnabled || currentUserRoles.contains(role);
@@ -184,8 +187,27 @@ public class CarResourceImpl implements CarResource {
         if (currentUserRoles.contains(managerPo)) {
             filterList.add(
                     new KeyValuePair(
-                            "nextStatus",
-                            Status.ON_MAINTENANCE.name()
+                            "currentStatus",
+                            new OrValue(
+                                    String.join(
+                                            ",",
+                                            currentUserRoles.stream().map(
+                                                    role -> String.join(
+                                                            ",",
+                                                            availableStatusesForRoles.get(role)
+                                                                    .stream()
+                                                                    .map(Status::name)
+                                                                    .collect(
+                                                                            Collectors.toList()
+                                                                    )
+                                                    )
+                                            ).collect(
+                                                    Collectors.toList()
+                                            )
+                                    ),
+                                    "nextStatus",
+                                    Status.ON_MAINTENANCE.name()
+                            )
                     )
             );
         }
