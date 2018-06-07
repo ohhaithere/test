@@ -52,8 +52,13 @@ public final class RepositoryHelper {
                 return criteriaBuilder.equal(path, Integer.valueOf(value));
             } else if (isDouble(javaType)) {
                 return criteriaBuilder.equal(path, Double.valueOf(value));
+            } else if (javaType.isAssignableFrom(Date.class)) {
+                return criteriaBuilder.equal(path, DATE_FORMATTER.parse(value));
             }
         } catch (NumberFormatException e) {
+            return criteriaBuilder.conjunction();
+        } catch (ParseException e) {
+            log.warn("Incorrect criteria parsing", e);
             return criteriaBuilder.conjunction();
         }
 
