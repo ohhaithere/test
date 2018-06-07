@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.domain.model.KeyValuePair;
+import ru.vtb.carrent.car.domain.model.OrValue;
 import ru.vtb.carrent.car.repository.CarRepositoryCustom;
 import ru.vtb.carrent.car.util.RepositoryHelper;
 
@@ -70,9 +71,45 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 }
                 javaType = path.getModel().getBindableJavaType();
                 if (pair.getValue() instanceof String) {
-                    predicates.add(RepositoryHelper.getEqualCriteria(((String) pair.getValue()).trim(), javaType, criteriaBuilder, path, false));
+                    predicates.add(
+                            RepositoryHelper.getEqualCriteria(
+                                    ((String) pair.getValue()).trim(),
+                                    javaType,
+                                    criteriaBuilder,
+                                    path,
+                                    false
+                            )
+                    );
                 } else if (pair.getValue() instanceof List) {
                     predicates.add(RepositoryHelper.getBetweenCriteria((List<String>) pair.getValue(), javaType, criteriaBuilder, path));
+                } else if (pair.getValue() instanceof OrValue) {
+                    final OrValue orValue = (OrValue) pair.getValue();
+                    String anotherKey = StringUtils.isNotBlank(orValue.getAnotherKey()) ? orValue.getAnotherKey().trim()
+                            : "";
+                    Path anotherPath = getPath(root, anotherKey);
+                    if (anotherPath == null) {
+                        log.error(String.format("Field with name {%s} not found", anotherKey));
+                        return new PageImpl<>(Collections.emptyList());
+                    }
+                    Class anotherJavaType = anotherPath.getModel().getBindableJavaType();
+                    predicates.add(
+                            criteriaBuilder.or(
+                                    RepositoryHelper.getEqualCriteria(
+                                            ((String) orValue.getOneValue()).trim(),
+                                            javaType,
+                                            criteriaBuilder,
+                                            path,
+                                            false
+                                    ),
+                                    RepositoryHelper.getEqualCriteria(
+                                            ((String) orValue.getAnotherValue()).trim(),
+                                            anotherJavaType,
+                                            criteriaBuilder,
+                                            anotherPath,
+                                            false
+                                    )
+                            )
+                    );
                 }
             }
         }
