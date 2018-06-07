@@ -91,10 +91,10 @@ public class CarResourceImpl implements CarResource {
     @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCars')")
     public Page<CarDto> getCars(String filter, Pageable pageable) {
         final Map<String, List<Status>> availableStatusesForRoles = new HashMap<>();
-        availableStatusesForRoles.put(ADMIN_ROLE, Arrays.asList(Status.values()));
+        availableStatusesForRoles.put(ADMIN_ROLE, Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE));
         availableStatusesForRoles.put(SERVICE_MANAGER_ROLE, Arrays.asList(Status.ON_MAINTENANCE));
         availableStatusesForRoles.put(RENTAL_MANAGER_ROLE, Arrays.asList(Status.IN_STOCK, Status.IN_RENT));
-        availableStatusesForRoles.put(CEO_ROLE, Arrays.asList(Status.values()));
+        availableStatusesForRoles.put(CEO_ROLE, Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE));
         List<String> rolesWithLocationConstraint = Collections.singletonList(RENTAL_MANAGER_ROLE);
         UserInfo userInfo;
         List<String> currentUserRoles = Collections.singletonList(ADMIN_ROLE);
