@@ -114,4 +114,13 @@
     <changeSet id="20180607-new-start-value-set-to-hibernate_sequence" author="Roman Meerson">
         <sql>select setval('hibernate_sequence', max(id)) from carmanagement.car</sql>
     </changeSet>
+
+    <changeSet id="20180607-add-testdata-to-preference" author="Roman Meerson">
+        <sql>
+            INSERT INTO carmanagement.preferences (id, name, value) VALUES (1, 'service-interval', '30');
+            INSERT INTO carmanagement.preferences (id, name, value) VALUES (2, 'default_rent_time', '1');
+            INSERT INTO carmanagement.preferences (id, name, value) VALUES (3, 'service_time', '12');
+            INSERT INTO carmanagement.preferences (id, name, value) VALUES (4, 'service_mileage', '10000');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
