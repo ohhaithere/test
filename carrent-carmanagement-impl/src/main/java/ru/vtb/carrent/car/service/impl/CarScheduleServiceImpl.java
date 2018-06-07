@@ -51,7 +51,9 @@ public class CarScheduleServiceImpl {
                 MessageContainer<CarReleasedDto> messageContainer = new MessageContainer<>(
                         new CarReleasedDto(
                                 car.getId(),
-                                car.getLocationId()
+                                car.getLocationId(),
+                                car.getModel(),
+                                car.getRegNumber()
                         )
                 );
                 sender.send(KafkaConfig.TOPIC, messageContainer);
