@@ -17,7 +17,7 @@ import ru.vtb.carrent.car.status.Status;
  */
 @Component
 class StateMachineTreadLocalFactory {
-    private ThreadLocal<StateMachine<Status, Event>> stateMachineThreadLocal = new ThreadLocal<>();
+    private final ThreadLocal<StateMachine<Status, Event>> stateMachineThreadLocal = new ThreadLocal<>();
 
     private final CarStateMachineBuilder stateMachineBuilder;
 
