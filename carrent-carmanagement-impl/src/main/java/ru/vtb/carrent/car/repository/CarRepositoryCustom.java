@@ -17,6 +17,7 @@ import java.util.List;
  *
  * @author Valiantsin_Charkashy
  */
+@FunctionalInterface
 public interface CarRepositoryCustom {
 
     /**

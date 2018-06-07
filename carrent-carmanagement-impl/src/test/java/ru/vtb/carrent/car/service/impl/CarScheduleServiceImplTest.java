@@ -1,9 +1,12 @@
 /*
  * VTB Group. Do not reproduce without permission in writing.
- * Copyright (c) 2017 VTB Group. All rights reserved.
+ * Copyright (c) 2018 VTB Group. All rights reserved.
  */
 
 package ru.vtb.carrent.car.service.impl;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 
 import org.mockito.Mockito;
 import org.springframework.statemachine.StateMachine;
@@ -17,14 +20,13 @@ import ru.vtb.carrent.car.kafka.Sender;
 import ru.vtb.carrent.car.repository.CarRepository;
 import ru.vtb.carrent.car.statemachine.StateMachineSupplier;
 import ru.vtb.carrent.car.status.Status;
+import ru.vtb.carrent.preorder.dto.MessageContainer;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-
-import static org.mockito.Matchers.any;
 
 /**
  * Unit test for {@link CarScheduleServiceImpl}.
@@ -50,13 +52,71 @@ public class CarScheduleServiceImplTest {
     }
 
     @Test
+    public void testCheckAndNotify() {
+        Mockito.when(
+                carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name())
+        ).thenReturn(
+                Collections.singletonList(
+                        new Car(
+                                1L,
+                                "s500",
+                                "a000aa",
+                                new Date(),
+                                1,
+                                new Date(),
+                                new Date(),
+                                Status.IN_STOCK.name(),
+                                new Date(),
+                                Status.IN_STOCK.name(),
+                                new Date(),
+                                1L,
+                                null)
+                )
+        );
+        Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
+                .thenReturn(Mockito.mock(StateMachine.class));
+        Mockito.doNothing().when(sender).send(anyString(), any(MessageContainer.class));
+
+        carMaintenanceService.checkAndNotify();
+    }
+
+    @Test
+    public void testCheckAndNotifyTheCarWithNullDateOfTheNextStatus() {
+        Mockito.when(
+                carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name())
+        ).thenReturn(
+                Collections.singletonList(
+                        new Car(
+                                1L,
+                                "s500",
+                                "a000aa",
+                                new Date(),
+                                1,
+                                new Date(),
+                                new Date(),
+                                Status.IN_STOCK.name(),
+                                new Date(),
+                                Status.IN_STOCK.name(),
+                                null,
+                                1L,
+                                null)
+                )
+        );
+        Mockito.when(stateMachineSupplier.getCarStateMachine(any()))
+                .thenReturn(Mockito.mock(StateMachine.class));
+        Mockito.doNothing().when(sender).send(anyString(), any(MessageContainer.class));
+
+        carMaintenanceService.checkAndNotify();
+    }
+
+    @Test
     public void testCheckAndRent() {
         Mockito.when(
                 carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name())
         ).thenReturn(
                 Collections.singletonList(
                         new Car(
-                                1l,
+                                1L,
                                 "s500",
                                 "a000aa",
                                 new Date(),
@@ -84,7 +144,7 @@ public class CarScheduleServiceImplTest {
         ).thenReturn(
                 Collections.singletonList(
                         new Car(
-                                1l,
+                                1L,
                                 "s500",
                                 "a000aa",
                                 new Date(),
@@ -117,7 +177,7 @@ public class CarScheduleServiceImplTest {
         ).thenReturn(
                 Collections.singletonList(
                         new Car(
-                                1l,
+                                1L,
                                 "s500",
                                 "a000aa",
                                 new Date(),
@@ -151,7 +211,7 @@ public class CarScheduleServiceImplTest {
         ).thenReturn(
                 Collections.singletonList(
                         new Car(
-                                1l,
+                                1L,
                                 "s500",
                                 "a000aa",
                                 new Date(),

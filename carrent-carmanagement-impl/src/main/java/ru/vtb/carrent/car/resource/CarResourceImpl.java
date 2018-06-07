@@ -1,6 +1,6 @@
 /*
  * VTB Group. Do not reproduce without permission in writing.
- * Copyright (c) 2017 VTB Group. All rights reserved.
+ * Copyright (c) 2018 VTB Group. All rights reserved.
  */
 
 package ru.vtb.carrent.car.resource;
@@ -49,10 +49,10 @@ public class CarResourceImpl implements CarResource {
 
     private final CarService service;
     private final CarMapper mapper;
-    private String admin = "Администратор";
-    private String managerPo = "Менеджер по обслуживанию";
-    private String managerPp = "Менеджер по прокату";
-    private String ceo = "Руководитель";
+    private static final String ADMIN_ROLE = "Администратор";
+    private static final String SERVICE_MANAGER_ROLE = "Менеджер по обслуживанию";
+    private static final String RENTAL_MANAGER_ROLE = "Менеджер по прокату";
+    private static final String CEO_ROLE = "Руководитель";
 
     /**
      * Car controller constructor.
@@ -84,24 +84,6 @@ public class CarResourceImpl implements CarResource {
         return mapper.toDto(service.find(id));
     }
 
-
-    @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCars')")
-    public Page<CarDto> getCarsOld(String filter, Pageable pageable) {
-        List<KeyValuePair> filterList = null;
-        if (!StringUtils.isEmpty(filter)) {
-            try {
-                filterList = FilterUtils.getFilterList(filter);
-                log.debug("Filter List: {}", filterList);
-            } catch (IOException e) {
-                log.error("filter ({}) could be parsed.", filter, e);
-            }
-        }
-
-        return filterList == null || filterList.isEmpty()
-                ? service.findPaginated(pageable).map(mapper::toDto)
-                : service.getByFilter(filterList, pageable).map(mapper::toDto);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -109,31 +91,19 @@ public class CarResourceImpl implements CarResource {
     @PreAuthorize("hasPermission('ru_vtb_carrent_car_resource_CarResource_getCars')")
     public Page<CarDto> getCars(String filter, Pageable pageable) {
         final Map<String, List<Status>> availableStatusesForRoles = new HashMap<>();
-        availableStatusesForRoles.put(
-                admin,
-                Arrays.asList(Status.values())
-        );
-        availableStatusesForRoles.put(
-                managerPo,
-                Arrays.asList(Status.ON_MAINTENANCE)
-        );
-        availableStatusesForRoles.put(
-                managerPp,
-                Arrays.asList(Status.IN_STOCK, Status.IN_RENT)
-        );
-        availableStatusesForRoles.put(
-                ceo,
-                Arrays.asList(Status.values())
-        );
-        List<String> rolesWithLocationConstraint = Collections.singletonList(managerPp);
+        availableStatusesForRoles.put(ADMIN_ROLE, Arrays.asList(Status.values()));
+        availableStatusesForRoles.put(SERVICE_MANAGER_ROLE, Arrays.asList(Status.ON_MAINTENANCE));
+        availableStatusesForRoles.put(RENTAL_MANAGER_ROLE, Arrays.asList(Status.IN_STOCK, Status.IN_RENT));
+        availableStatusesForRoles.put(CEO_ROLE, Arrays.asList(Status.values()));
+        List<String> rolesWithLocationConstraint = Collections.singletonList(RENTAL_MANAGER_ROLE);
         UserInfo userInfo;
-        List<String> currentUserRoles = Collections.singletonList(admin);
+        List<String> currentUserRoles = Collections.singletonList(ADMIN_ROLE);
         Long userLocationId = 0L;
         try {
             userInfo = JwtUtils.getUserInfo();
             currentUserRoles = userInfo.getRoles();
             userLocationId = userInfo.getLocationId();
-        } catch (Exception e) {
+        } catch (Exception e) { //NOSONAR
             log.error("Problems with jwt info taking", e);
         }
         log.debug("{}", currentUserRoles);
@@ -146,28 +116,9 @@ public class CarResourceImpl implements CarResource {
                 log.error("filter ({}) could be parsed.", filter, e);
             }
         }
-        if (!currentUserRoles.contains(managerPo)) {
-            filterList.add(
-                    new KeyValuePair(
-                            "currentStatus",
-                            String.join(
-                                    ",",
-                                    currentUserRoles.stream().map(
-                                            role -> String.join(
-                                                    ",",
-                                                    availableStatusesForRoles.get(role)
-                                                            .stream()
-                                                            .map(Status::name)
-                                                            .collect(
-                                                                    Collectors.toList()
-                                                            )
-                                            )
-                                    ).collect(
-                                            Collectors.toList()
-                                    )
-                            )
-                    )
-            );
+        if (!currentUserRoles.contains(SERVICE_MANAGER_ROLE)) {
+            filterList.add(new KeyValuePair("currentStatus", String.join(",", currentUserRoles.stream().map(role -> String.join(",",
+                    availableStatusesForRoles.get(role).stream().map(Status::name).collect(Collectors.toList()))).collect(Collectors.toList()))));
         }
         Boolean locationConstraintEnabled = Boolean.FALSE;
         for (String role : rolesWithLocationConstraint) {
@@ -175,41 +126,15 @@ public class CarResourceImpl implements CarResource {
         }
         log.debug("Location constraint enabled {}", locationConstraintEnabled);
         if (locationConstraintEnabled) {
-            filterList.add(
-                    new KeyValuePair(
-                            "locationId",
-                            userLocationId.toString()
-                    )
-            );
+            filterList.add(new KeyValuePair("locationId", userLocationId.toString()));
         }
-        //МО должен видеть машины "Скоро в обслуживание" - по требованию это те автомобили
+        //МО должен видеть машины "Скоро в обслуживание"
+        //по требованию это те автомобили,
         //которые имеют nextStatus == ON_MAINTENANCE
-        if (currentUserRoles.contains(managerPo)) {
-            filterList.add(
-                    new KeyValuePair(
-                            "currentStatus",
-                            new OrValue(
-                                    String.join(
-                                            ",",
-                                            currentUserRoles.stream().map(
-                                                    role -> String.join(
-                                                            ",",
-                                                            availableStatusesForRoles.get(role)
-                                                                    .stream()
-                                                                    .map(Status::name)
-                                                                    .collect(
-                                                                            Collectors.toList()
-                                                                    )
-                                                    )
-                                            ).collect(
-                                                    Collectors.toList()
-                                            )
-                                    ),
-                                    "nextStatus",
-                                    Status.ON_MAINTENANCE.name()
-                            )
-                    )
-            );
+        if (currentUserRoles.contains(SERVICE_MANAGER_ROLE)) {
+            filterList.add(new KeyValuePair("currentStatus", new OrValue(String.join(",", currentUserRoles.stream().map(role -> String.join(",",
+                    availableStatusesForRoles.get(role).stream().map(Status::name).collect(Collectors.toList()))).collect(Collectors.toList())),
+                        "nextStatus", Status.ON_MAINTENANCE.name())));
         }
         return service.getByFilter(filterList, pageable).map(mapper::toDto);
     }

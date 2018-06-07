@@ -1,6 +1,6 @@
 /*
  * VTB Group. Do not reproduce without permission in writing.
- * Copyright (c) 2017 VTB Group. All rights reserved.
+ * Copyright (c) 2018 VTB Group. All rights reserved.
  */
 
 package ru.vtb.carrent.car.config;
@@ -15,7 +15,8 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 
 /**
- *
+ * BaseTestConfig.
+ * @author Valiantsin_Charkashy
  */
 @TestConfiguration
 public class BaseTestConfig {

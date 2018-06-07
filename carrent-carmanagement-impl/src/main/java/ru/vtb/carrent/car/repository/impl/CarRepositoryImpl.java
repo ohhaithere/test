@@ -41,6 +41,8 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
     @PersistenceContext
     private EntityManager em;
 
+    private static final String FIELD_NOT_FOUND = "Field with name {%s} not found";
+
     /**
      * {@inheritDoc}
      */
@@ -58,60 +60,8 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         }
 
         List<Predicate> predicates = new LinkedList<>();
-        if (CollectionUtils.isNotEmpty(filter)) {
-            Path path;
-            Class javaType;
-            String key;
-            for (KeyValuePair pair : filter) {
-                key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
-                path = getPath(root, key);
-                if (path == null) {
-                    log.error(String.format("Field with name {%s} not found", key));
-                    return new PageImpl<>(Collections.emptyList());
-                }
-                javaType = path.getModel().getBindableJavaType();
-                if (pair.getValue() instanceof String) {
-                    predicates.add(
-                            RepositoryHelper.getEqualCriteria(
-                                    ((String) pair.getValue()).trim(),
-                                    javaType,
-                                    criteriaBuilder,
-                                    path,
-                                    false
-                            )
-                    );
-                } else if (pair.getValue() instanceof List) {
-                    predicates.add(RepositoryHelper.getBetweenCriteria((List<String>) pair.getValue(), javaType, criteriaBuilder, path));
-                } else if (pair.getValue() instanceof OrValue) {
-                    final OrValue orValue = (OrValue) pair.getValue();
-                    String anotherKey = StringUtils.isNotBlank(orValue.getAnotherKey()) ? orValue.getAnotherKey().trim()
-                            : "";
-                    Path anotherPath = getPath(root, anotherKey);
-                    if (anotherPath == null) {
-                        log.error(String.format("Field with name {%s} not found", anotherKey));
-                        return new PageImpl<>(Collections.emptyList());
-                    }
-                    Class anotherJavaType = anotherPath.getModel().getBindableJavaType();
-                    predicates.add(
-                            criteriaBuilder.or(
-                                    RepositoryHelper.getEqualCriteria(
-                                            ((String) orValue.getOneValue()).trim(),
-                                            javaType,
-                                            criteriaBuilder,
-                                            path,
-                                            false
-                                    ),
-                                    RepositoryHelper.getEqualCriteria(
-                                            ((String) orValue.getAnotherValue()).trim(),
-                                            anotherJavaType,
-                                            criteriaBuilder,
-                                            anotherPath,
-                                            false
-                                    )
-                            )
-                    );
-                }
-            }
+        if (CollectionUtils.isNotEmpty(filter) && !populatePredicates(filter, criteriaBuilder, root, predicates)) {
+            return new PageImpl<>(Collections.emptyList());
         }
 
         criteria.where(predicates.toArray(new Predicate[predicates.size()]));
@@ -125,11 +75,68 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    private boolean populatePredicates(List<KeyValuePair> filter, CriteriaBuilder criteriaBuilder, Root<Car> root, List<Predicate> predicates) {
+        Path path;
+        Class javaType;
+        String key;
+        for (KeyValuePair pair : filter) {
+            key = StringUtils.isNotBlank(pair.getKey()) ? pair.getKey().trim() : "";
+            path = getPath(root, key);
+            if (path == null) {
+                log.error(String.format(FIELD_NOT_FOUND, key));
+                return false;
+            }
+            javaType = path.getModel().getBindableJavaType();
+            if (pair.getValue() instanceof String) {
+                predicates.add(
+                        RepositoryHelper.getEqualCriteria(
+                                ((String) pair.getValue()).trim(),
+                                javaType,
+                                criteriaBuilder,
+                                path,
+                                false
+                        )
+                );
+            } else if (pair.getValue() instanceof List) {
+                predicates.add(RepositoryHelper.getBetweenCriteria((List<String>) pair.getValue(), javaType, criteriaBuilder, path));
+            } else if (pair.getValue() instanceof OrValue) {
+                final OrValue orValue = (OrValue) pair.getValue();
+                String anotherKey = StringUtils.isNotBlank(orValue.getAnotherKey()) ? orValue.getAnotherKey().trim()
+                        : "";
+                Path anotherPath = getPath(root, anotherKey);
+                if (anotherPath == null) {
+                    log.error(String.format(FIELD_NOT_FOUND, anotherKey));
+                    return false;
+                }
+                Class anotherJavaType = anotherPath.getModel().getBindableJavaType();
+                predicates.add(
+                        criteriaBuilder.or(
+                                RepositoryHelper.getEqualCriteria(
+                                        ((String) orValue.getOneValue()).trim(),
+                                        javaType,
+                                        criteriaBuilder,
+                                        path,
+                                        false
+                                ),
+                                RepositoryHelper.getEqualCriteria(
+                                        ((String) orValue.getAnotherValue()).trim(),
+                                        anotherJavaType,
+                                        criteriaBuilder,
+                                        anotherPath,
+                                        false
+                                )
+                        )
+                );
+            }
+        }
+        return true;
+    }
+
     private Path getPath(Root<Car> root, String key) {
         try {
             return root.get(key);
         } catch (IllegalArgumentException e) {
-            log.error(String.format("Field with name {%s} not found", key), e);
+            log.error(String.format(FIELD_NOT_FOUND, key), e);
         }
         return null;
     }

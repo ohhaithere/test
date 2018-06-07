@@ -44,7 +44,7 @@ public class CarScheduleServiceImpl {
     public void checkAndNotify() {
         log.debug("checkAndNotify job start");
         final List<Car> carsInStock = carRepository.findByCurrentStatusIgnoreCase(Status.IN_STOCK.name());
-        log.debug("{} cars in stock found", carsInStock.size());
+        log.debug("{} cars in stock were found", carsInStock.size());
         for (Car car : carsInStock) {
             if (car.getDateOfNextStatus() == null) {
                 log.debug("{} car is free, going to notify preorder service", car);
@@ -111,16 +111,16 @@ public class CarScheduleServiceImpl {
         );
         Date now = new Date();
         for (Car car : carsOnMaintenance) {
-            if (car.getDateOfNextStatus() != null && car.getDateOfNextStatus().before(now)) {
-                if (Status.IN_STOCK.name().equalsIgnoreCase(car.getNextStatus())) {
-                    if (Status.ON_MAINTENANCE.name().equalsIgnoreCase(car.getCurrentStatus())) {
-                        log.debug("{} car is going to release from maintenance", car);
-                        stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.SERVICE_DONE);
-                    }
-                    if (Status.IN_RENT.name().equalsIgnoreCase(car.getCurrentStatus())) {
-                        log.debug("{} car is going to release from rent", car);
-                        stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.RENT_DONE);
-                    }
+            if (car.getDateOfNextStatus() != null
+                    && car.getDateOfNextStatus().before(now)
+                    && Status.IN_STOCK.name().equalsIgnoreCase(car.getNextStatus())) {
+                if (Status.ON_MAINTENANCE.name().equalsIgnoreCase(car.getCurrentStatus())) {
+                    log.debug("{} car is going to release from maintenance", car);
+                    stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.SERVICE_DONE);
+                }
+                if (Status.IN_RENT.name().equalsIgnoreCase(car.getCurrentStatus())) {
+                    log.debug("{} car is going to release from rent", car);
+                    stateMachineSupplier.getCarStateMachine(car).sendEvent(Event.RENT_DONE);
                 }
             }
             log.debug("checkAndRelease job end");
