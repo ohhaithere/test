@@ -55,6 +55,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public Car create(Car car) {
         car.setId(null);
+        car.setCurrentStatus(Status.IN_STOCK.name());
+        car.setDateOfCurrentStatus(new Date());
+        car.setNextStatus(null);
+        car.setDateOfNextStatus(null);
         Car carSaved = repository.save(car);
         historyService.notify(carSaved, HistoryEvent.CREATE);
         return carSaved;
