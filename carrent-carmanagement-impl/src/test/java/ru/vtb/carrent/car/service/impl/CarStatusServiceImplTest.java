@@ -14,6 +14,13 @@ import ru.vtb.carrent.car.service.CarService;
 import ru.vtb.carrent.car.service.CarStatusService;
 import ru.vtb.carrent.car.service.PreferencesService;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import static org.testng.Assert.assertEquals;
+import static ru.vtb.carrent.car.status.Status.IN_RENT;
+
 /**
  * CarStatusServiceImplTest.
  *
@@ -45,10 +52,31 @@ public class CarStatusServiceImplTest {
     }
 
     @Test
-    public void testRelease() {
-        carStatusService.release(
-                new Car()
-        );
+    public void testReleaseAfterRent() {
+        long rentTime = Calendar.getInstance().getTimeInMillis() - TimeUnit.HOURS.toMillis(1);
+        Car car = new Car()
+                .setId(1L)
+                .setCurrentStatus(IN_RENT.name())
+                .setDateOfCurrentStatus(new Date(rentTime))
+                .setMileage(0);
+
+        carStatusService.release(car, true);
+
+        assertEquals(60, car.getMileage());
+    }
+
+    @Test
+    public void testReleaseAfterService() {
+        long rentTime = Calendar.getInstance().getTimeInMillis() - TimeUnit.HOURS.toMillis(1);
+        Car car = new Car()
+                .setId(1L)
+                .setCurrentStatus(IN_RENT.name())
+                .setDateOfCurrentStatus(new Date(rentTime))
+                .setMileage(0);
+
+        carStatusService.release(car, false);
+
+        assertEquals(0, car.getMileage());
     }
 
     @Test

@@ -20,6 +20,7 @@ import ru.vtb.carrent.preorder.dto.MessageContainer;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Status service.
@@ -32,6 +33,7 @@ public class CarStatusServiceImpl implements CarStatusService {
 
     private static final String SERVICE_INTERVAL_PROPERTY = "service-interval";
     private static final Duration SERVICE_INTERVAL_DEFAULT = Duration.ofMinutes(5);
+    private static final int MILEAGE_PER_RENT_HOUR = 60;
     private final Sender sender;
     private final CarService carService;
     private final PreferencesService preferencesService;
@@ -55,10 +57,14 @@ public class CarStatusServiceImpl implements CarStatusService {
     }
 
     @Override
-    public void release(Car car) {
+    public void release(Car car, boolean isCarAfterRent) {
         log.debug("Car would be released in stock.");
+        Date releaseDate = new Date();
+        if (isCarAfterRent) {
+            car.setMileage(calculateCarMileageAfterRent(car, releaseDate));
+        }
         car.setCurrentStatus(Status.IN_STOCK.name());
-        car.setDateOfCurrentStatus(new Date());
+        car.setDateOfCurrentStatus(releaseDate);
         car.setDateOfNextStatus(null);
         car.setNextStatus(null);
         carService.update(car, HistoryEvent.STATUS_CHANGED, false);
@@ -72,6 +78,14 @@ public class CarStatusServiceImpl implements CarStatusService {
                 )
         );
         sender.send(KafkaConfig.TOPIC, messageContainer);
+    }
+
+    private static int calculateCarMileageAfterRent(Car car, Date releaseDate) {
+        Date startRentDate = car.getDateOfCurrentStatus();
+        long diffInMilliseconds = releaseDate.getTime() - startRentDate.getTime();
+        long hoursOfRent = TimeUnit.HOURS.convert(diffInMilliseconds, TimeUnit.MILLISECONDS);
+        int mileageDiff = Math.toIntExact(hoursOfRent) * MILEAGE_PER_RENT_HOUR;
+        return car.getMileage() + mileageDiff;
     }
 
     @Override

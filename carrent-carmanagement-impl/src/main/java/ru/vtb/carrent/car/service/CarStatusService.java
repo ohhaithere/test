@@ -6,7 +6,6 @@
 package ru.vtb.carrent.car.service;
 
 import ru.vtb.carrent.car.domain.entity.Car;
-import ru.vtb.carrent.preorder.dto.PreorderDto;
 
 /**
  * Status service.
@@ -16,7 +15,7 @@ import ru.vtb.carrent.preorder.dto.PreorderDto;
 public interface CarStatusService {
     void putOnMaintenance(Car car);
 
-    void release(Car car);
+    void release(Car car, boolean isCarAfterRent);
 
     void drop(Car car);
 

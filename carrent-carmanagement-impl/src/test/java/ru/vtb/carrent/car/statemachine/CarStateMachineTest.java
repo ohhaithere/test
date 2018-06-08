@@ -9,7 +9,6 @@ import ru.vtb.carrent.car.event.Event;
 import ru.vtb.carrent.car.service.CarStatusService;
 import ru.vtb.carrent.car.status.Status;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -78,7 +77,7 @@ public class CarStateMachineTest {
 
         stateMachine.sendEvent(Event.RENT_DONE);
 
-        verify(carStatusService).release(testCar);
+        verify(carStatusService).release(testCar, true);
     }
 
     @Test
@@ -88,7 +87,7 @@ public class CarStateMachineTest {
 
         stateMachine.sendEvent(Event.RENT_DONE);
 
-        verify(carStatusService, never()).release(testCar);
+        verify(carStatusService, never()).release(testCar, true);
     }
 
     @Test
@@ -98,7 +97,7 @@ public class CarStateMachineTest {
 
         stateMachine.sendEvent(Event.SERVICE_DONE);
 
-        verify(carStatusService).release(testCar);
+        verify(carStatusService).release(testCar, false);
     }
 
     @Test
@@ -108,7 +107,7 @@ public class CarStateMachineTest {
 
         stateMachine.sendEvent(Event.SERVICE_DONE);
 
-        verify(carStatusService, never()).release(testCar);
+        verify(carStatusService, never()).release(testCar, false);
     }
 
     @Test

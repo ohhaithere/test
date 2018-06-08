@@ -15,7 +15,6 @@ import ru.vtb.carrent.car.domain.entity.Car;
 import ru.vtb.carrent.car.event.Event;
 import ru.vtb.carrent.car.service.CarStatusService;
 import ru.vtb.carrent.car.status.Status;
-import ru.vtb.carrent.preorder.dto.PreorderDto;
 
 import java.util.EnumSet;
 
@@ -63,7 +62,7 @@ public class CarStateMachineBuilder {
                 .and()
                 .withExternal()
                 .source(Status.IN_RENT).target(Status.IN_STOCK)
-                .action(this.release())
+                .action(this.release(true))
                 .event(Event.RENT_DONE)
                 .and()
                 .withExternal()
@@ -73,7 +72,7 @@ public class CarStateMachineBuilder {
                 .and()
                 .withExternal()
                 .source(Status.ON_MAINTENANCE).target(Status.IN_STOCK)
-                .action(this.release())
+                .action(this.release(false))
                 .event(Event.SERVICE_DONE)
                 .and()
                 .withExternal()
@@ -92,8 +91,8 @@ public class CarStateMachineBuilder {
         return context -> carStatusService.rent(getCarFromContext(context));
     }
 
-    private Action<Status, Event> release() {
-        return context -> carStatusService.release(getCarFromContext(context));
+    private Action<Status, Event> release(boolean isCarAfterRent) {
+        return context -> carStatusService.release(getCarFromContext(context), isCarAfterRent);
     }
 
     private Action<Status, Event> putOnMaintenance() {
