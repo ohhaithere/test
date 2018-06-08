@@ -210,7 +210,7 @@ public class CarResourceImpl implements CarResource {
         buildMap.put(SERVICE_MANAGER_ROLE, Collections.unmodifiableList(
                 Arrays.asList(Status.ON_MAINTENANCE)));
         buildMap.put(RENTAL_MANAGER_ROLE, Collections.unmodifiableList(
-                Arrays.asList(Status.IN_STOCK, Status.IN_RENT)));
+                Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE)));
         buildMap.put(CEO_ROLE, Collections.unmodifiableList(
                 Arrays.asList(Status.IN_STOCK, Status.IN_RENT, Status.ON_MAINTENANCE)));
         return Collections.unmodifiableMap(buildMap);
